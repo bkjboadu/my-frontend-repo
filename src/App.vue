@@ -27,7 +27,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <component :is="Layout"></component>
+  <main  class="overflow-x-hidden">
+    <component :is="Layout"></component>
+    <app-alert class="absolute"></app-alert>
+  </main>
 </template>
 
 <style scoped>
