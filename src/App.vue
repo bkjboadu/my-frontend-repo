@@ -11,8 +11,7 @@ export default defineComponent({
   },
   data() {
     return {
-      socket: null,
-      listenMessage: null
+      show: false
     }
   },
   computed: {
@@ -27,9 +26,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <main  class="overflow-x-hidden">
+  <main class="w-screen overflow-x-hidden">
     <component :is="Layout"></component>
-    <app-alert class="absolute"></app-alert>
+    <app-alert v-if="show" class="absolute"></app-alert>
   </main>
 </template>
 
