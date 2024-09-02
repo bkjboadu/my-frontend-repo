@@ -41,8 +41,8 @@ export default {
     v-bind="$attrs"
     class="fixed w-full max-w-[500px] top-8 right-8 z-50 transform transition duration-300 ease-linear"
     :class="{
-      'translate-x-[120%]': !utilsStore.toast.show,
-      'translate-x-0': utilsStore.toast.show,
+      'hidden translate-x-[120%]': !utilsStore.toast.show,
+      'block translate-x-0': utilsStore.toast.show,
     }"
   >
     <div

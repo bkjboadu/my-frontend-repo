@@ -46,7 +46,7 @@ const spanStyles = computed(() => {
 })
 const containerHeight = computed(() => {
   if(props.large) return 'h-28'
-  return 'h-10'
+  return 'h-11'
 })
 
 const containerStyles = computed(() => {
@@ -128,7 +128,7 @@ const handleUpdate = (event) => {
   left: 0;
   right: 0;
   bottom: 0;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .input:focus {

@@ -1,5 +1,6 @@
 <script>
 import loginBackground from '@/assets/loginBackground.webp'
+import ResetPasswordBackground from '@/assets/passwordReset.webp'
 import whiteLogo from '@/assets/dropShopWhite.svg'
 import blackLogo from '@/assets/dropShopBlack.svg'
 import { computed } from 'vue'
@@ -22,6 +23,9 @@ export default {
     },
     logo() {
       return this.isMobile ? blackLogo : whiteLogo
+    },
+    backgroundImage() {
+      return this.isMobile ? "" : (this.$route.name === 'forgot-password' || this.$route.name === "reset-password") ? ResetPasswordBackground : loginBackground
     }
   },
   methods: {
@@ -39,13 +43,20 @@ export default {
 </script>
 
 <template>
-  <main :class="['relative flex items-center page-container w-full', isMobile ? 'flex-col p-9 overflow-x-hidden gap-9' : 'h-screen overflow-hidden justify-center gap-32']">
+  <main
+    :class="['relative flex items-center page-container w-full', isMobile ? 'flex-col p-9 overflow-x-hidden gap-9' : 'h-screen overflow-hidden justify-center gap-32']"
+    :style="{ backgroundImage: `url(${backgroundImage})` }"
+  >
     <div>
       <img :class="['', isMobile ? 'w-[188px]' : 'w-[532px]']" :src="logo" alt="Logo">
     </div>
-    <div :class="[isMobile ? 'w-full' : 'w-[640px]']"><RouterView /></div>
+    <div :class="[isMobile ? 'w-full' : 'w-[640px]']">
+      <transition name="fade" mode="out-in">
+        <RouterView />
+      </transition>
+    </div>
   </main>
-  <div v-if="isMobile" class="border-t pt-1">
+  <div v-if="isMobile" class="border-t pt-1 absolute bottom-2">
     <p class="mx-9 text-center text-[9px] text-dark-primary">Copyright © 2024 Dropshop. All Rights Reserved. Accessibility, User Agreement, Privacy, Consumer Health Data, Payments Terms of Use, Cookies, CA Privacy Notice, Your Privacy Choices and AdChoice</p>
   </div>
 </template>
@@ -69,7 +80,7 @@ export default {
 }
 
 .page-container {
-  background-image: url("@/assets/loginBackground.webp");
+  /*background-image: url("@/assets/loginBackground.webp");*/
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -80,5 +91,15 @@ export default {
   .page-container {
     background-image: none;
   }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

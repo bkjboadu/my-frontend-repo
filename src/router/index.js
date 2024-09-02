@@ -34,6 +34,27 @@ const router = createRouter({
       meta: {
         layout: 'blank'
       }
+    },
+    {
+      path: "/forgot-password",
+      name: "forgot-password",
+      component: () => import('@/views/ForgotPassword.vue'),
+      meta: {
+        layout: 'blank'
+      }
+    },
+    {
+      path: "/reset-password/:token",
+      name: "reset-password",
+      component: () => import('@/views/ResetPassword.vue'),
+      meta: {
+        layout: 'blank'
+      }
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "not-found",
+      redirect: "/home"
     }
   ]
 })

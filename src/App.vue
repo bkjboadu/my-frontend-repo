@@ -28,7 +28,7 @@ export default defineComponent({
 <template>
   <main class="w-screen overflow-x-hidden">
     <component :is="Layout"></component>
-    <app-alert v-if="show" class="absolute"></app-alert>
+    <app-alert class="absolute"></app-alert>
   </main>
 </template>
 
