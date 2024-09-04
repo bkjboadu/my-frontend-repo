@@ -17,7 +17,7 @@ const router = createRouter({
       meta: {
         layout: 'dashboard'
       },
-      beforeEnter: isLoggedIn
+      // beforeEnter: isLoggedIn
     },
     {
       path: '/login',
