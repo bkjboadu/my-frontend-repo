@@ -69,7 +69,7 @@ export default {
       </app-button>
       <div class="flex gap-2 items-center text-[#828282]">
         <hr class="border w-full">
-        <span class="text-nowrap">or sign in with</span>
+        <span class="text-nowrap text-xs md:text-sm">or sign in with</span>
         <hr class="border w-full">
       </div>
     </div>
