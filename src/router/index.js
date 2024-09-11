@@ -8,7 +8,7 @@ const router = createRouter({
     {
       path: '/',
       name: '',
-      redirect: "/login",
+      redirect: "/home",
     },
     {
       path: '/home',
@@ -17,7 +17,7 @@ const router = createRouter({
       meta: {
         layout: 'dashboard'
       },
-      beforeEnter: isLoggedIn
+      // beforeEnter: isLoggedIn
     },
     {
       path: '/login',

@@ -56,7 +56,7 @@ export default {
       </transition>
     </div>
   </main>
-  <div v-if="isMobile" class="border-t pt-1 absolute bottom-2">
+  <div v-if="isMobile" class="border-t pt-1">
     <p class="mx-9 text-center text-[9px] text-dark-primary">Copyright © 2024 Dropshop. All Rights Reserved. Accessibility, User Agreement, Privacy, Consumer Health Data, Payments Terms of Use, Cookies, CA Privacy Notice, Your Privacy Choices and AdChoice</p>
   </div>
 </template>

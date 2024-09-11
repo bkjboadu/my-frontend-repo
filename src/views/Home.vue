@@ -23,7 +23,7 @@ export default {
 </script>
 
 <template>
-<div class="w-screen h-screen">
+<div class="w-screen">
   <h1>Home</h1>
 </div>
 </template>
