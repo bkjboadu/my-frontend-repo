@@ -54,7 +54,7 @@ export default {
 </script>
 
 <template>
-  <footer class="bg-dark-primary w-full text-white py-6 px-5 text-sm md:text-base">
+  <footer class="bg-dark-primary w-full text-white p-3 md:py-6 md:px-5 text-sm md:text-base">
     <div class=" flex gap-10 md:gap-24">
       <div class="w-[510px] flex flex-col gap-5 md:gap-10">
         <div>
