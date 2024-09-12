@@ -1,0 +1,29 @@
+name: Deploy to Heroku
+
+on:
+  push:
+    branches:
+      - main # Trigger the workflow on pushes to the 'main' branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest # Run the job on the latest version of Ubuntu
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2 # Check out the repository code
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2 # Set up Node.js environment
+        with:
+          node-version: '16' # Adjust this version as per your application's requirement
+
+      - name: Install Heroku CLI
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh  # Install the Heroku CLI
+
+      - name: Deploy to Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }} # Use Heroku API Key from GitHub Secrets
+        run: |
+          ./deploy-to-heroku.sh  # Run your deployment script
