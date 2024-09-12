@@ -1,6 +1,12 @@
-const express = require('express')
-const path = require('path')
+import express from 'express'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
 const app = express()
+
+// __dirname is not available in ES modules, so we need to recreate it
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // Serve the static files from the dist directory
 app.use(express.static(path.join(__dirname, 'dist')))
