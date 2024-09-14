@@ -33,7 +33,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="w-screen overflow-x-hidden">
     <nav class="bg-dark-primary py-6 px-5 flex gap-12">
       <div class="w-24 h-7 md:w-40 md:h-10">
         <img class="w-full h-full" :src="whiteLogo" alt="Dropshop">
@@ -88,8 +88,8 @@ export default {
         </div>
       </div>
     </section>
-    <div :class="['hamburger-menu absolute top-0 bottom-0 right-0 bg-black bg-opacity-40 transition-all ease-in-out duration-700', openMenu ? 'left-0' : 'left-full']">
-      <HamburgerClose class="absolute top-14 left-10 w-5 h-5 cursor-pointer" @click="openMenu = !openMenu" />
+    <div :class="['hamburger-menu fixed top-0 bottom-0 right-0 bg-black bg-opacity-40 transition-all ease-in-out duration-700 z-50', openMenu ? 'left-0' : 'left-full']">
+      <HamburgerClose v-if="openMenu" class="absolute top-14 left-10 w-5 h-5 cursor-pointer" @click="openMenu = !openMenu" />
       <div class="menu-content bg-white w-[80%] h-max ml-auto mt-14">
         <div v-if="openMenu" class="p-6 font-medium flex flex-col gap-4">
           <p @click="isCategoryOpen = !isCategoryOpen" class="cursor-pointer hover:text-blue-primary hover:underline transition ease-in duration-100 flex items-center gap-3">
