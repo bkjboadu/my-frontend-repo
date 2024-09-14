@@ -1,9 +1,12 @@
 <script>
 
 import { useCommonUtils } from '@/stores/commonStore.js'
+import ExecutiveDealsCard from '@/components/ExecutiveDealsCard.vue'
+import FeaturedCategoryCard from '@/components/FeaturedCategoryCard.vue'
 
 export default {
   name: 'HomePage',
+  components: { FeaturedCategoryCard, ExecutiveDealsCard },
   data() {
     return {
       email: "",
@@ -24,7 +27,8 @@ export default {
 
 <template>
 <div class="w-screen">
-  <h1>Home</h1>
+  <ExecutiveDealsCard/>
+  <FeaturedCategoryCard/>
 </div>
 </template>
 
