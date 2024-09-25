@@ -30,7 +30,16 @@ export default {
     },
     utilStore() {
       return useCommonUtils()
-    }
+    },
+    isValid() {
+      return this.email && this.password && this.includesSpecialCharacter && this.includesUpperCase && this.includesLowerCase && this.password.length >= 8
+    },
+    isPasswordsMatch() {
+      if(!this.confirmPassword) {
+        return true
+      }
+      return this.password === this.confirmPassword
+    },
   },
   methods: {
     showPasswordChecker() {
@@ -118,9 +127,15 @@ export default {
         label="Confirm Password"
         type="password"
         v-model="confirmPassword"
+        :is-error="!isPasswordsMatch"
+        error-message="Passwords do not match"
         is-required
       ></app-input-field>
-      <app-button @click="handleSubmit" class="bg-dark-primary text-white font-semibold">Sign Up</app-button>
+      <app-button
+        @click="handleSubmit"
+        class="bg-dark-primary text-white font-semibold disabled:bg-gray-500 disabled:cursor-not-allowed"
+        :disabled="!isValid || !isPasswordsMatch"
+      >Sign Up</app-button>
     </div>
     <div class="flex flex-col gap-2">
       <p>By clicking sign in, you agree to our <span class="text-blue-primary cursor-pointer">Terms of Service</span> and <span class="text-blue-primary cursor-pointer">Privacy Policy</span></p>

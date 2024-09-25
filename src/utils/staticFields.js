@@ -10,7 +10,8 @@ export const categories = [
       // { title: 'Speakers', link: '/speakers' },
       { title: 'Cameras', link: '/cameras' },
       { title: 'Wearable Technology', link: '/accessories' }
-    ]
+    ],
+    link: '/electronics'
   },
   {
     title: 'Home & Kitchen',
@@ -21,7 +22,8 @@ export const categories = [
       { title: 'Bedding & Bath', link: '/home-appliances' },
       { title: 'Kitchen Appliances', link: '/storage-organisation' },
       { title: 'Home Decor', link: '/tools' },
-    ]
+    ],
+    link: '/home-kitchen'
   },
   {
     title: 'Fitness & Sports',

@@ -61,7 +61,7 @@ export default {
       <FastAndFreeDelivery/>
       <span>Fast and Free Delivery</span>
     </div>
-    <app-button class="text-xs md:text-base text-gray-700 bg-gray-100 w-[72px] md:w-[115px] hover:text-white hover:bg-dark-primary transition-colors ease-in duration-300">Add To Cart</app-button>
+    <app-button class="text-xs md:text-base text-gray-800 bg-gray-100 w-[72px] md:w-[115px] hover:text-white hover:bg-dark-primary transition-colors ease-in duration-300">Add To Cart</app-button>
   </div>
 </div>
 </template>

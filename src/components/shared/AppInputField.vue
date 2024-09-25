@@ -19,7 +19,7 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  message: {
+  errorMessage: {
     type: String,
     default: ''
   },
@@ -64,11 +64,15 @@ const handleUnFocus = () => {
 const handleUpdate = (event) => {
   emit('update:modelValue', event.target.value)
   if(props.isRequired) {
-    hasError.value = event.target.value.trim() === ''
+    hasError.value = props.isError ? props.isError : event.target.value.trim() === ''
   } else {
-    hasError.value = false
+    hasError.value = props.isError
   }
 }
+
+watch(() => props.isError, (newValue) => {
+  hasError.value = newValue
+})
 
 // watch(value, (newValue) => {
 //   if (props.label === 'Points' && /\D/.test(newValue)) {
@@ -115,7 +119,7 @@ const handleUpdate = (event) => {
         {{ showPassword ? 'Hide' : 'Show' }}
       </p>
     </div>
-    <p v-if="hasError" class="text-xs text-red-500">{{label}} can't be empty</p>
+    <p v-if="hasError" class="text-xs text-red-500">{{ errorMessage || (label + " can't be empty")}}</p>
   </div>
 </template>
 

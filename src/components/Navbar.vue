@@ -28,6 +28,27 @@ export default {
     isLoggedIn() {
       return this.authStore.isLoggedIn
     }
+  },
+  methods: {
+    goToLink(link) {
+      this.$router.push(`/home${link}`)
+    },
+    toggleCategory(event) {
+      const categoryBtn = this.$el.querySelector("#category")
+      const currentTarget = event.target
+
+      if (categoryBtn.contains(currentTarget) || currentTarget.classList.contains('categories')) {
+        this.isCategoryOpen = !this.isCategoryOpen
+      } else {
+        this.isCategoryOpen = false
+      }
+    }
+  },
+  mounted() {
+    document.addEventListener('click', this.toggleCategory)
+  },
+  beforeUnmount() {
+    document.removeEventListener('click', this.toggleCategory)
   }
 }
 </script>
@@ -70,7 +91,7 @@ export default {
       </div>
     </nav>
     <section class="flex relative gap-12 items-center pl-6 py-4 shadow-md font-medium text-dark-primary nav-links">
-      <p @click="isCategoryOpen = !isCategoryOpen" class="cursor-pointer hover:text-blue-primary hover:underline transition ease-in duration-100 flex items-center gap-3">
+      <p id="category" class="cursor-pointer hover:text-blue-primary hover:underline transition ease-in duration-100 flex items-center gap-3">
         Categories
         <DownIcon color="#262F3D" :class="['w-[20px] h-full mt-1 transition ease-in-out duration-300', isCategoryOpen ? 'rotate-180' : '']"/>
       </p>
@@ -79,12 +100,17 @@ export default {
       <p class="cursor-pointer hover:text-blue-primary hover:underline transition ease-in duration-100">Fashion Finds</p>
       <p class="cursor-pointer hover:text-blue-primary hover:underline transition ease-in duration-100">Discount Sales</p>
       <p class="cursor-pointer hover:text-blue-primary hover:underline transition ease-in duration-100">Keep Fit</p>
-      <div v-if="isCategoryOpen" class="categories absolute top-full p-6 bg-white grid grid-cols-4 shadow-md gap-4">
+<!--      <div v-if="isCategoryOpen" class="categories fixed top-36 p-6 bg-white grid grid-cols-4 shadow-md gap-4 z-50">-->
+<!--        <div v-for="(category, index) in categories" :key="index" class="text-dark-primary">-->
+<!--          <h3 class="font-semibold text-lg">{{category.title}}</h3>-->
+<!--          <ul v-for="subCategory in category.subCategories" class="ml-3">-->
+<!--            <li class="font-light mt-1 hover:text-blue-primary hover:underline cursor-pointer">{{subCategory.title}}</li>-->
+<!--          </ul>-->
+<!--        </div>-->
+<!--      </div>-->
+      <div v-if="isCategoryOpen" id="categories" class="categories fixed top-36 bg-white shadow-md gap-4 z-50">
         <div v-for="(category, index) in categories" :key="index" class="text-dark-primary">
-          <h3 class="font-semibold text-lg">{{category.title}}</h3>
-          <ul v-for="subCategory in category.subCategories" class="ml-3">
-            <li class="font-light mt-1 hover:text-blue-primary hover:underline cursor-pointer">{{subCategory.title}}</li>
-          </ul>
+          <h3 @click="goToLink(category?.link)" class="font-medium text-lg p-2 hover:bg-gray-100 transition-colors duration-700 ease-in-out cursor-pointer">{{category.title}}</h3>
         </div>
       </div>
     </section>
