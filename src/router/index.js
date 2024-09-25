@@ -17,6 +17,21 @@ const router = createRouter({
       meta: {
         layout: 'dashboard'
       },
+      children: [
+        {
+          path: "electronics",
+          name: "Electronics",
+          component: () => import('@/views/Electronics.vue'),
+          // meta: {
+          //   layout: 'dashboard'
+          // }
+        },
+        {
+          path: "home-kitchen",
+          name: "Home & Kitchen",
+          component: () => import('@/views/HomeKitchen.vue'),
+        }
+      ]
       // beforeEnter: isLoggedIn
     },
     {

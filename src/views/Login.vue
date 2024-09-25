@@ -2,12 +2,12 @@
 import GoogleIcon from '@/assets/icons/GoogleIcon.vue'
 import AppleIcon from '@/assets/icons/AppleIcon.vue'
 import FacebookIcon from '@/assets/icons/FacebookIcon.vue'
-import GreenCheckWithCircle from '@/assets/icons/GreenCheckWithCircle.vue'
-import RedCloseIconWithCircle from '@/assets/icons/RedCloseIconWithCircle.vue'
+import { useCommonUtils } from '@/stores/commonStore.js'
+import useAuthStore from '@/stores/authStore.js'
 
 export default {
   name: "LoginPage",
-  components: { RedCloseIconWithCircle, GreenCheckWithCircle, FacebookIcon, AppleIcon, GoogleIcon },
+  components: { FacebookIcon, AppleIcon, GoogleIcon },
   inject: ["isMobile"],
   data() {
     return {
@@ -17,17 +17,14 @@ export default {
     };
   },
   computed: {
-    includesLowerCase() {
-      return /[a-z]/.test(this.password);
+    commonStore() {
+      return useCommonUtils();
     },
-    includesUpperCase() {
-      return /[A-Z]/.test(this.password);
-    },
-    includesSpecialCharacter() {
-      return /[&@#!]/.test(this.password);
+    authStore() {
+      return useAuthStore();
     },
     isValid() {
-      return this.email && this.password && this.includesSpecialCharacter && this.includesUpperCase && this.includesLowerCase && this.password.length >= 8
+      return this.email && this.password
     },
   },
   methods: {
@@ -36,6 +33,16 @@ export default {
         this.passwordChecker = true
       }
     },
+    login() {
+      if(!this.isValid) {
+        this.commonStore.showAlert('Please fill in all fields', 'error')
+      }
+      const payload = {
+        email: this.email,
+        password: this.password
+      }
+      this.authStore.login(payload)
+    }
   },
 }
 </script>
@@ -87,31 +94,31 @@ export default {
         is-required
         @input="showPasswordChecker"
       ></app-input-field>
-      <div v-if="passwordChecker" class="text-xs -mt-3">
-        <p :class="['flex items-center gap-2', password.length >= 8 ? 'text-green-500' : 'text-red-500']">
-          <green-check-with-circle v-if="password.length >= 8"></green-check-with-circle>
-          <red-close-icon-with-circle v-else></red-close-icon-with-circle>
-          Password should be at least 8 characters
-        </p>
-        <p :class="['flex items-center gap-2', includesLowerCase ? 'text-green-500' : 'text-red-500']">
-          <green-check-with-circle v-if="includesLowerCase"></green-check-with-circle>
-          <red-close-icon-with-circle v-else></red-close-icon-with-circle>
-          Include at least one lowercase
-        </p>
-        <p :class="['flex items-center gap-2', includesUpperCase ? 'text-green-500' : 'text-red-500']">
-          <green-check-with-circle v-if="includesUpperCase"></green-check-with-circle>
-          <red-close-icon-with-circle v-else></red-close-icon-with-circle>
-          Include at least one uppercase
-        </p>
-        <p :class="['flex items-center gap-2', includesSpecialCharacter ? 'text-green-500' : 'text-red-500']">
-          <green-check-with-circle v-if="includesSpecialCharacter"></green-check-with-circle>
-          <red-close-icon-with-circle v-else></red-close-icon-with-circle>
-          Include at least one special character (&@#!)
-        </p>
-      </div>
+<!--      <div v-if="passwordChecker" class="text-xs -mt-3">-->
+<!--        <p :class="['flex items-center gap-2', password.length >= 8 ? 'text-green-500' : 'text-red-500']">-->
+<!--          <green-check-with-circle v-if="password.length >= 8"></green-check-with-circle>-->
+<!--          <red-close-icon-with-circle v-else></red-close-icon-with-circle>-->
+<!--          Password should be at least 8 characters-->
+<!--        </p>-->
+<!--        <p :class="['flex items-center gap-2', includesLowerCase ? 'text-green-500' : 'text-red-500']">-->
+<!--          <green-check-with-circle v-if="includesLowerCase"></green-check-with-circle>-->
+<!--          <red-close-icon-with-circle v-else></red-close-icon-with-circle>-->
+<!--          Include at least one lowercase-->
+<!--        </p>-->
+<!--        <p :class="['flex items-center gap-2', includesUpperCase ? 'text-green-500' : 'text-red-500']">-->
+<!--          <green-check-with-circle v-if="includesUpperCase"></green-check-with-circle>-->
+<!--          <red-close-icon-with-circle v-else></red-close-icon-with-circle>-->
+<!--          Include at least one uppercase-->
+<!--        </p>-->
+<!--        <p :class="['flex items-center gap-2', includesSpecialCharacter ? 'text-green-500' : 'text-red-500']">-->
+<!--          <green-check-with-circle v-if="includesSpecialCharacter"></green-check-with-circle>-->
+<!--          <red-close-icon-with-circle v-else></red-close-icon-with-circle>-->
+<!--          Include at least one special character (&@#!)-->
+<!--        </p>-->
+<!--      </div>-->
       <app-button
         class="bg-dark-primary text-white font-semibold disabled:bg-gray-500 disabled:cursor-not-allowed"
-        :disabled="!isValid"
+        @click="login()"
       >Sign In</app-button>
     </div>
     <div class="flex flex-col gap-2">
