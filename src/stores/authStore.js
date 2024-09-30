@@ -1,33 +1,56 @@
 import { defineStore } from 'pinia'
 import api from '@/utils/api.js'
-
+import { useCommonUtils } from '@/stores/commonStore.js'
+import { useRouter } from 'vue-router'
+import Cookies from 'js-cookie'
 
 const useAuthStore = defineStore("auth", {
   state: () => ({
     user: null,
+    loading: false,
   }),
   getters: {
     isLoggedIn: (state) => !!state.user,
   },
   actions: {
     login(payload) {
-      api.post('auth_user/login/', payload)
+      this.$patch({ loading: true });
+      const commonStore = useCommonUtils();
+      api.post('/accounts/login/', payload)
         .then((response) => {
-          console.log(response)
-          // this.setUser(response.data.user);
+          const router = useRouter();
+          commonStore.showAlert(response.data?.message || 'Login successful.', 'success');
+          this.setUser(response.data?.user);
+          Cookies.set('authToken', response.data?.access);
+          Cookies.set("refreshToken", response.data?.refresh);
+          setTimeout(() => {
+            router.push({ name: 'home' });
+          }, 3000);
         })
         .catch((error) => {
-          console.error(error);
+          commonStore.showAlert(error.response?.data?.message || 'An error occurred. Please try again.', 'error');
+        })
+        .finally(() => {
+          this.$patch({ loading: false });
         });
 
     },
     register(payload) {
-      api.post('auth_user/signup/', payload)
+      this.$patch({ loading: true });
+      const commonStore = useCommonUtils();
+      api.post('/accounts/signup/', payload)
         .then((response) => {
-          this.setUser(response.data.user);
+          const router = useRouter();
+          commonStore.showAlert(response.data?.message || 'Account created successfully. Please login to continue.', 'success');
+          setTimeout(() => {
+            router.push({ name: 'login' });
+          }, 3000);
         })
         .catch((error) => {
-          console.error(error);
+          commonStore.showAlert(error.response?.data?.message || 'An error occurred. Please try again.', 'error');
+        })
+        .finally(() => {
+          this.$patch({ loading: false });
         });
     },
     setUser(user) {

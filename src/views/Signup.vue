@@ -5,6 +5,7 @@ import FacebookIcon from '@/assets/icons/FacebookIcon.vue'
 import GreenCheckWithCircle from '@/assets/icons/GreenCheckWithCircle.vue'
 import RedCloseIconWithCircle from '@/assets/icons/RedCloseIconWithCircle.vue'
 import { useCommonUtils } from '@/stores/commonStore.js'
+import useAuthStore from '@/stores/authStore.js'
 
 export default {
   name: "UserAuth",
@@ -31,6 +32,9 @@ export default {
     utilStore() {
       return useCommonUtils()
     },
+    authStore() {
+      return useAuthStore()
+    },
     isValid() {
       return this.email && this.password && this.includesSpecialCharacter && this.includesUpperCase && this.includesLowerCase && this.password.length >= 8
     },
@@ -48,6 +52,13 @@ export default {
       }
     },
     handleSubmit() {
+      if(this.isValid && this.isPasswordsMatch) {
+        this.authStore.register({
+          email: this.email,
+          password: this.password,
+          confirm_password: this.confirmPassword
+        })
+      }
       // this.utilStore.showAlert('test', 'success')
     }
   },
@@ -87,7 +98,7 @@ export default {
         <hr class="border w-full">
       </div>
     </div>
-    <div class="flex flex-col gap-4">
+    <form class="flex flex-col gap-4">
       <app-input-field
         label="Email"
         type="email"
@@ -132,11 +143,12 @@ export default {
         is-required
       ></app-input-field>
       <app-button
-        @click="handleSubmit"
+        type="submit"
+        @click.prevent="handleSubmit"
         class="bg-dark-primary text-white font-semibold disabled:bg-gray-500 disabled:cursor-not-allowed"
-        :disabled="!isValid || !isPasswordsMatch"
-      >Sign Up</app-button>
-    </div>
+        :disabled="!isValid || !isPasswordsMatch || authStore.loading"
+      >{{authStore.loading ? 'loading...' : 'Sign Up' }}</app-button>
+    </form>
     <div class="flex flex-col gap-2">
       <p>By clicking sign in, you agree to our <span class="text-blue-primary cursor-pointer">Terms of Service</span> and <span class="text-blue-primary cursor-pointer">Privacy Policy</span></p>
     </div>

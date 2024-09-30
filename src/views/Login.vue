@@ -80,7 +80,7 @@ export default {
         <hr class="border w-full">
       </div>
     </div>
-    <div class="flex flex-col gap-4">
+    <form class="flex flex-col gap-4">
       <app-input-field
         label="Email"
         type="email"
@@ -117,10 +117,12 @@ export default {
 <!--        </p>-->
 <!--      </div>-->
       <app-button
+        type="submit"
         class="bg-dark-primary text-white font-semibold disabled:bg-gray-500 disabled:cursor-not-allowed"
-        @click="login()"
-      >Sign In</app-button>
-    </div>
+        @click.prevent="login"
+        :disabled="!isValid || authStore.loading"
+      >{{authStore.loading ? 'loading...' : 'Sign In' }}</app-button>
+    </form>
     <div class="flex flex-col gap-2">
       <router-link :to="{name: 'forgot-password'}" class="text-sm text-blue-primary underline cursor-pointer">Forgot password?</router-link>
       <p>By clicking sign in, you agree to our <span class="text-blue-primary cursor-pointer">Terms of Service</span> and <span class="text-blue-primary cursor-pointer">Privacy Policy</span></p>
