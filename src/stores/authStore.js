@@ -3,6 +3,7 @@ import api from '@/utils/api.js'
 import { useCommonUtils } from '@/stores/commonStore.js'
 import { useRouter } from 'vue-router'
 import Cookies from 'js-cookie'
+import router from '@/router/index.js'
 
 const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -18,7 +19,6 @@ const useAuthStore = defineStore("auth", {
       const commonStore = useCommonUtils();
       api.post('/accounts/login/', payload)
         .then((response) => {
-          const router = useRouter();
           commonStore.showAlert(response.data?.message || 'Login successful.', 'success');
           this.setUser(response.data?.user);
           Cookies.set('authToken', response.data?.access);
@@ -40,7 +40,6 @@ const useAuthStore = defineStore("auth", {
       const commonStore = useCommonUtils();
       api.post('/accounts/signup/', payload)
         .then((response) => {
-          const router = useRouter();
           commonStore.showAlert(response.data?.message || 'Account created successfully. Please login to continue.', 'success');
           setTimeout(() => {
             router.push({ name: 'login' });
