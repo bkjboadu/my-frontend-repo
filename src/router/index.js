@@ -17,22 +17,21 @@ const router = createRouter({
       meta: {
         layout: 'dashboard'
       },
+    },
+    {
+      path: '/categories/:category',
+      name: 'categories',
+      component: () => import('@/views/Products.vue'),
+      meta: {
+        layout: 'dashboard'
+      },
       children: [
         {
-          path: "electronics",
-          name: "Electronics",
-          component: () => import('@/views/Electronics.vue'),
-          // meta: {
-          //   layout: 'dashboard'
-          // }
-        },
-        {
-          path: "home-kitchen",
-          name: "Home & Kitchen",
-          component: () => import('@/views/HomeKitchen.vue'),
+          path: "/categories/:category/:product",
+          name: "category",
+          component: () => import('@/views/SingleProduct.vue'),
         }
       ]
-      // beforeEnter: isLoggedIn
     },
     {
       path: '/login',

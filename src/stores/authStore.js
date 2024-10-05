@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import api from '@/utils/api.js'
 import { useCommonUtils } from '@/stores/commonStore.js'
-import { useRouter } from 'vue-router'
 import Cookies from 'js-cookie'
 import router from '@/router/index.js'
 
@@ -58,7 +57,8 @@ const useAuthStore = defineStore("auth", {
     logout() {
       this.user = null;
     },
-  }
+  },
+  persist: true,
 })
 
 export default useAuthStore;
