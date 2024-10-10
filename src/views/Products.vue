@@ -20,56 +20,56 @@ export default {
   data() {
     return {
       electronics,
-      topCategories: [
-        {
-          name: 'Laptops & Computers',
-          image: mac
-        },
-        {
-          name: 'TV & Home Theatres',
-          image: tv
-        },
-        {
-          name: 'Fridges & Freezers',
-          image: fridge
-        }
-      ],
-      subCategories: [
-        {
-          name: 'Laptops & Computers',
-          image: mac
-        },
-        {
-          name: 'TV & Home Theatres',
-          image: tv
-        },
-        {
-          name: 'Fridges & Freezers',
-          image: fridge
-        },{
-          name: 'Laptops & Computers',
-          image: mac
-        },
-        {
-          name: 'TV & Home Theatres',
-          image: tv
-        },
-        {
-          name: 'Fridges & Freezers',
-          image: fridge
-        },{
-          name: 'Laptops & Computers',
-          image: mac
-        },
-        {
-          name: 'TV & Home Theatres',
-          image: tv
-        },
-        {
-          name: 'Fridges & Freezers',
-          image: fridge
-        }
-      ],
+      // topCategories: [
+      //   {
+      //     name: 'Laptops & Computers',
+      //     image: mac
+      //   },
+      //   {
+      //     name: 'TV & Home Theatres',
+      //     image: tv
+      //   },
+      //   {
+      //     name: 'Fridges & Freezers',
+      //     image: fridge
+      //   }
+      // ],
+      // subCategories: [
+      //   {
+      //     name: 'Laptops & Computers',
+      //     image: mac
+      //   },
+      //   {
+      //     name: 'TV & Home Theatres',
+      //     image: tv
+      //   },
+      //   {
+      //     name: 'Fridges & Freezers',
+      //     image: fridge
+      //   },{
+      //     name: 'Laptops & Computers',
+      //     image: mac
+      //   },
+      //   {
+      //     name: 'TV & Home Theatres',
+      //     image: tv
+      //   },
+      //   {
+      //     name: 'Fridges & Freezers',
+      //     image: fridge
+      //   },{
+      //     name: 'Laptops & Computers',
+      //     image: mac
+      //   },
+      //   {
+      //     name: 'TV & Home Theatres',
+      //     image: tv
+      //   },
+      //   {
+      //     name: 'Fridges & Freezers',
+      //     image: fridge
+      //   }
+      // ],
       responsiveOptions: [
         {
           breakpoint: '1400px',
@@ -131,81 +131,94 @@ export default {
     }
   },
   computed: {
-    productsStore() {
-      return useProductStore()
+    storeDetails() {
+      return useProductStore().storeDetails
+    },
+    topCategories() {
+      return useProductStore().storeDetails.categories?.slice(0, 3) || []
+    },
+    subCategories() {
+      return useProductStore().storeDetails.categories || []
     }
   },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      if(!vm.storeDetails) {
+        return vm.$router.push({name: 'Home'})
+      }
+    })
+  }
 }
 </script>
 
 <template>
   <Breadcrumb class="text-gray-500 ml-6" :model="breadcrumbItems" />
   <router-view></router-view>
-<!--  <div class="px-6 py-4" v-else>-->
-<!--&lt;!&ndash;    top card&ndash;&gt;-->
-<!--    <div class="bg-primary-gray rounded-lg shadow-md py-6 px-8 flex items-center justify-between">-->
-<!--      <h3 class="card-header">Delve into the world of tech and electronics</h3>-->
-<!--      <div class="w-full h-[318px] ">-->
-<!--        <img class="w-full h-full object-contain" :src="electronics" alt="">-->
-<!--      </div>-->
-<!--    </div>-->
+  <div class="px-6 py-4">
+<!--    top card-->
+    <div class="bg-primary-gray rounded-lg shadow-md py-6 px-8 flex items-center justify-between">
+      <h3 class="card-header">{{storeDetails?.description}}</h3>
+      <div class="w-full h-[318px] ">
+        <img class="w-full h-full object-contain" :src="electronics" alt="">
+      </div>
+    </div>
 
-<!--&lt;!&ndash;    subcategories&ndash;&gt;-->
-<!--    <div class="my-6">-->
-<!--      <h3 class="text-3xl text-dark-primary font-medium mb-6">Top Categories</h3>-->
-<!--      <div class="grid grid-cols-2 gap-10">-->
-<!--        <div-->
-<!--          v-for="(topCategory, index) in topCategories"-->
-<!--          :key="index"-->
-<!--          :class="[-->
-<!--          'bg-dark-primary cursor-pointer w-full hover:bg-blue-primary transition-colors duration-700 ease-in-out rounded-md',-->
-<!--          index === 0 ? 'row-span-2' : 'row-span-1'-->
-<!--          ]"-->
-<!--        >-->
-<!--          <div class="flex items-center justify-between p-6">-->
-<!--            <h4 class="text-white text-3xl font-medium max-w-[300px]">{{topCategory.name}}</h4>-->
-<!--            <ForwardIcon fill="white" width="40"/>-->
-<!--          </div>-->
-<!--          <div :class="[index !== 0 ? 'w-2/4 ml-auto' : '']">-->
-<!--            <img :class="['w-full h-full object-cover', index !== 0 ? 'max-h-[330px]' : '']" :src="topCategory.image" alt="">-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
+<!--    subcategories-->
+    <div class="my-6">
+      <h3 class="text-3xl text-dark-primary font-medium mb-6">Top Categories</h3>
+      <div class="grid grid-cols-2 gap-10">
+        <div
+          v-for="(topCategory, index) in topCategories"
+          :key="index"
+          :class="[
+          'bg-dark-primary cursor-pointer w-full hover:bg-blue-primary transition-colors duration-700 ease-in-out rounded-md',
+          index === 0 ? 'row-span-2' : 'row-span-1'
+          ]"
+        >
+          <div class="flex items-center justify-between p-6">
+            <h4 class="text-white text-3xl font-medium max-w-[300px]">{{topCategory.name}}</h4>
+            <ForwardIcon fill="white" width="40"/>
+          </div>
+          <div :class="[index !== 0 ? 'w-2/4 ml-auto' : '']">
+            <img :class="['w-full h-full object-cover', index !== 0 ? 'max-h-[330px]' : '']" :src="topCategory.image" alt="">
+          </div>
+        </div>
+      </div>
+    </div>
 
-<!--&lt;!&ndash;    other categories&ndash;&gt;-->
-<!--    <div class="my-6">-->
-<!--      <h3 class="text-3xl text-dark-primary font-medium mb-6">Other Categories</h3>-->
-<!--      <Carousel-->
-<!--      :value="subCategories"-->
-<!--      :numVisible="3" :numScroll="3"-->
-<!--      :responsive-options="responsiveOptions"-->
-<!--      class="flex justify-center"-->
-<!--    >-->
-<!--      <template #item="{data}">-->
-<!--        <div class="w-[362px] text-center">-->
-<!--          <div class="bg-primary-gray w-full h-[362px] flex items-end cursor-pointer hover:shadow-md transition-all duration-700 ease-in-out">-->
-<!--            <img class="w-full h-4/6 object-contain" :src="data.image" :alt="data.name">-->
-<!--          </div>-->
-<!--          <h4 class="text-lg my-4">{{data.name}}</h4>-->
-<!--        </div>-->
-<!--      </template>-->
-<!--    </Carousel>-->
-<!--    </div>-->
+<!--    other categories-->
+    <div class="my-6">
+      <h3 class="text-3xl text-dark-primary font-medium mb-6">Other Categories</h3>
+      <Carousel
+      :value="subCategories"
+      :numVisible="3" :numScroll="3"
+      :responsive-options="responsiveOptions"
+      class="flex justify-center"
+    >
+      <template #item="{data}">
+        <div class="w-[280px] text-center">
+          <div class="bg-primary-gray w-full h-[280px] flex items-end cursor-pointer hover:shadow-md transition-all duration-700 ease-in-out">
+            <img class="w-full h-4/6 object-contain" :src="data.image" :alt="data.name">
+          </div>
+          <h4 class="text-lg my-4">{{data.name}}</h4>
+        </div>
+      </template>
+    </Carousel>
+    </div>
 
-<!--&lt;!&ndash;    Popular brands&ndash;&gt;-->
-<!--    <div class="my-6">-->
-<!--      <h3 class="text-3xl text-dark-primary font-medium mb-6">Popular Brands</h3>-->
-<!--      <div class="grid md:grid-cols-2 xl:grid-cols-3 justify-between gap-y-6">-->
-<!--        <div class="w-[382px] text-center" v-for="(brand, index) in popularBrands" :key="index">-->
-<!--          <div class="bg-primary-gray w-full h-[382px] shadow-md cursor-pointer hover:shadow-lg transition-all duration-700 ease-in-out rounded-md">-->
-<!--            <img class="w-full h-full object-contain" :src="brand.image" :alt="brand.name">-->
-<!--          </div>-->
-<!--          <h4 class="text-lg my-4">{{brand.name}}</h4>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
+<!--    Popular brands-->
+    <div class="my-6">
+      <h3 class="text-3xl text-dark-primary font-medium mb-6">Popular Brands</h3>
+      <div class="grid md:grid-cols-2 xl:grid-cols-3 justify-between gap-y-6">
+        <div class="w-[280px] text-center" v-for="(brand, index) in popularBrands" :key="index">
+          <div class="bg-primary-gray w-full h-[280px] shadow-md cursor-pointer hover:shadow-lg transition-all duration-700 ease-in-out rounded-md">
+            <img class="w-full h-full object-contain" :src="brand.image" :alt="brand.name">
+          </div>
+          <h4 class="text-lg my-4">{{brand.name}}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
