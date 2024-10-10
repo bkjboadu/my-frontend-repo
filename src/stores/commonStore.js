@@ -11,6 +11,7 @@ export const useCommonUtils = defineStore("common-utils", {
         type: "success",
       },
       toastTimeoutId: null,
+      openNavMenu: false
     }
   },
   actions: {
@@ -36,6 +37,9 @@ export const useCommonUtils = defineStore("common-utils", {
         clearTimeout(this.toastTimeoutId)
       }
     },
+    toggleNav() {
+      this.openNavMenu = !this.open
+    }
   },
   persist: true
 })

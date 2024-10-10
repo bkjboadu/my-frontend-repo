@@ -28,7 +28,7 @@ const router = createRouter({
       children: [
         {
           path: "/categories/:category/:product",
-          name: "category",
+          name: "categories-product",
           component: () => import('@/views/SingleProduct.vue'),
         }
       ]
