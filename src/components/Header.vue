@@ -1,19 +1,16 @@
 <script>
 import whiteLogo from '@/assets/dropShopWhite.svg'
 import LocationIcon from '@/assets/icons/LocationIcon.vue'
-import CloseIcon from '@/assets/icons/CloseIcon.vue'
 import HeartIcon from '@/assets/icons/HeartIcon.vue'
 import BagIcon from '@/assets/icons/BagIcon.vue'
 import useAuthStore from '@/stores/authStore.js'
-import authStore from '@/stores/authStore.js'
-import DownIcon from '@/assets/icons/DownIcon.vue'
 import Hamburger from '@/assets/icons/Hamburger.vue'
-import HamburgerClose from '@/assets/icons/HamburgerClose.vue'
 import { categories } from '@/utils/staticFields.js'
 import { useCommonUtils } from '@/stores/commonStore.js'
+import Avatar from 'primevue/avatar';
 export default {
   name: 'AppHeader',
-  components: { HamburgerClose, Hamburger, DownIcon, BagIcon, HeartIcon, CloseIcon, LocationIcon },
+  components: { Hamburger, BagIcon, HeartIcon, LocationIcon, Avatar },
   data() {
     return {
       whiteLogo,
@@ -31,6 +28,12 @@ export default {
     },
     commonUtilsStore() {
       return useCommonUtils()
+    },
+    userDetails() {
+      return this.authStore?.user
+    },
+    userInitials() {
+      return this.userDetails?.first_name[0] + this.userDetails?.last_name[0]
     }
   },
   methods: {
@@ -60,9 +63,9 @@ export default {
 <template>
   <div class="w-screen overflow-x-hidden">
     <nav class="bg-dark-primary py-6 px-5 flex gap-12">
-      <div class="w-24 h-7 md:w-40 md:h-10">
+      <router-link to="/home" class="w-24 h-7 md:w-40 md:h-10 cursor-pointer">
         <img class="w-full h-full" :src="whiteLogo" alt="Dropshop">
-      </div>
+      </router-link>
       <div class="flex location items-center gap-3">
         <location-icon></location-icon>
         <div>
@@ -84,11 +87,18 @@ export default {
         <div v-if="isLoggedIn" class="flex items-center gap-2 user">
           <div>
             <p class="text-xs text-gray-200">Hi there,</p>
-            <p class="text-white font-semibold">Ellen</p>
+            <p class="text-white font-semibold">{{userDetails?.first_name}}</p>
           </div>
-          <div class="w-8 h-8 rounded-full overflow-hidden">
-            <img class="w-full h-full object-cover" src="" alt="profile">
-          </div>
+          <Avatar
+            :label="userInitials"
+            size=""
+            :icon="userInitials"
+            style="background-color: #dee9fc; color: #1a2551" shape="circle"
+            :image="userDetails?.avatar"
+          />
+<!--          <div class="w-8 h-8 rounded-full overflow-hidden">-->
+<!--            <img class="w-full h-full object-cover" src="" alt="profile">-->
+<!--          </div>-->
         </div>
         <router-link to="/login" v-else class="font-semibold text-white login">Login</router-link>
         <Hamburger class="hamburger" @click="commonUtilsStore.toggleNav()" />

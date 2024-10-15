@@ -26,9 +26,15 @@ export default {
         { label: 'Categories', icon: 'pi pi-fw pi-th-large', items: this.productStore?.storeDetails?.categories?.map(category => {
           return {
             label: category.name,
-            command: () => this.$router.push({name: "categories", params: {category: category.name} }),
+            command: () => {
+              const routeParam = category.name.toLowerCase().replace(/ /g, '-').replace(/&/g, 'and')
+              this.productStore.setSingleCategoryId(category.id)
+              this.$router.push({name: "CategoryProducts", params: {category: routeParam} })
+            },
           }
-          }) || [] },
+          }) || [
+            {label: "No Categories", icon: 'pi pi-fw pi-ban'}
+          ] },
         { label: 'Deal For the Day', icon: 'pi pi-fw pi-calendar' },
         { label: 'Top Deals', icon: 'pi pi-fw pi-star' },
         { label: 'Fashion Finds', icon: 'pi pi-fw pi-shopping-cart' },

@@ -3,6 +3,7 @@ import { createApp, defineAsyncComponent } from 'vue'
 import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
+import piniaPluginPersistedState from 'pinia-plugin-persistedstate'
 // import Aura from '@primevue/themes/aura';
 
 import App from './App.vue'
@@ -11,7 +12,7 @@ import './styles.css'
 
 const app = createApp(App)
 
-app.use(createPinia())
+app.use(createPinia().use(piniaPluginPersistedState))
 app.use(router)
 app.use(PrimeVue, {
   theme: {
