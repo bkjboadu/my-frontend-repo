@@ -36,4 +36,26 @@ api.interceptors.request.use(
   }
 );
 
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response.status === 401) {
+      const refreshToken = Cookies.get('refreshToken');
+      if (refreshToken) {
+        api.post('/accounts/token/refresh/', { refresh: refreshToken })
+          .then((response) => {
+            Cookies.set('authToken', response.data.access);
+            return api.request(error.config);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;

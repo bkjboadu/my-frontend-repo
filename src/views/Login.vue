@@ -4,6 +4,7 @@ import AppleIcon from '@/assets/icons/AppleIcon.vue'
 import FacebookIcon from '@/assets/icons/FacebookIcon.vue'
 import { useCommonUtils } from '@/stores/commonStore.js'
 import useAuthStore from '@/stores/authStore.js'
+import authStore from '@/stores/authStore.js'
 
 export default {
   name: "LoginPage",
@@ -42,6 +43,15 @@ export default {
         password: this.password
       }
       this.authStore.login(payload)
+    },
+    loginWithGoogle() {
+      // this.authStore.loginWithGoogle()
+      const clientId = import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID
+      const redirectUri = "http://localhost:8080/accounts/google/login/"
+      const scope = "https://www.googleapis.com/auth/userinfo.email"
+      const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`
+      window.location.href = url
+
     }
   },
 }
@@ -62,7 +72,10 @@ export default {
       </div>
     </div>
     <div class="flex flex-col gap-4">
-      <app-button class="bg-[#EEEEEE] text-[#2C3647] font-semibold flex items-center justify-center gap-3">
+      <app-button
+        class="bg-[#EEEEEE] text-[#2C3647] font-semibold flex items-center justify-center gap-3"
+        @click.prevent="loginWithGoogle()"
+      >
         <google-icon></google-icon>
         Google
       </app-button>

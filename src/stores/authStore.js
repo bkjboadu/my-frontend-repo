@@ -51,6 +51,15 @@ const useAuthStore = defineStore("auth", {
           this.$patch({ loading: false });
         });
     },
+    loginWithGoogle(code) {
+      api.post("/accounts/google-auth/", { code })
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+    },
     setUser(user) {
       this.user = user;
     },

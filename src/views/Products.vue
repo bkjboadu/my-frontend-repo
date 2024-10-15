@@ -131,33 +131,35 @@ export default {
     }
   },
   computed: {
+    productStore() {
+      return useProductStore()
+    },
     storeDetails() {
-      return useProductStore().storeDetails
+      return this.productStore.storeDetails
     },
     topCategories() {
-      return useProductStore().storeDetails.categories?.slice(0, 3) || []
+      return this.productStore.storeDetails.categories?.slice(0, 3) || []
     },
     subCategories() {
-      return useProductStore().storeDetails.categories || []
+      return this.productStore.storeDetails.categories || []
     }
   },
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      if(!vm.storeDetails) {
-        return vm.$router.push({name: 'Home'})
-      }
-    })
+  methods: {
+    goToCategoryProduct(category) {
+      const routeParam = category.name.toLowerCase().replace(/ /g, '-').replace(/&/g, 'and')
+      this.productStore.setSingleCategoryId(category.id)
+      this.$router.push({name: "CategoryProducts", params: {category: routeParam} })
+    }
   }
 }
 </script>
 
 <template>
-  <Breadcrumb class="text-gray-500 ml-6" :model="breadcrumbItems" />
-  <router-view></router-view>
+<!--  <Breadcrumb class="text-gray-500 ml-6" :model="breadcrumbItems" />-->
   <div class="px-6 py-4">
 <!--    top card-->
     <div class="bg-primary-gray rounded-lg shadow-md py-6 px-8 flex items-center justify-between">
-      <h3 class="card-header">{{storeDetails?.description}}</h3>
+      <h3 class="card-header">{{storeDetails?.description || "Welcome To DropShop"}}</h3>
       <div class="w-full h-[318px] ">
         <img class="w-full h-full object-contain" :src="electronics" alt="">
       </div>
@@ -166,7 +168,7 @@ export default {
 <!--    subcategories-->
     <div class="my-6">
       <h3 class="text-3xl text-dark-primary font-medium mb-6">Top Categories</h3>
-      <div class="grid grid-cols-2 gap-10">
+      <div v-if="topCategories.length" class="grid grid-cols-2 gap-10">
         <div
           v-for="(topCategory, index) in topCategories"
           :key="index"
@@ -174,6 +176,7 @@ export default {
           'bg-dark-primary cursor-pointer w-full hover:bg-blue-primary transition-colors duration-700 ease-in-out rounded-md',
           index === 0 ? 'row-span-2' : 'row-span-1'
           ]"
+          @click="goToCategoryProduct(topCategory)"
         >
           <div class="flex items-center justify-between p-6">
             <h4 class="text-white text-3xl font-medium max-w-[300px]">{{topCategory.name}}</h4>
@@ -184,19 +187,23 @@ export default {
           </div>
         </div>
       </div>
+      <div v-else class="w-full h-80 flex items-center justify-center">
+        <p class="text-dark-primary text-lg font-medium">No Categories Found</p>
+      </div>
     </div>
 
 <!--    other categories-->
     <div class="my-6">
       <h3 class="text-3xl text-dark-primary font-medium mb-6">Other Categories</h3>
       <Carousel
+        v-if="subCategories.length"
       :value="subCategories"
       :numVisible="3" :numScroll="3"
       :responsive-options="responsiveOptions"
       class="flex justify-center"
     >
       <template #item="{data}">
-        <div class="w-[280px] text-center">
+        <div @click="goToCategoryProduct(data)" class="w-[280px] text-center">
           <div class="bg-primary-gray w-full h-[280px] flex items-end cursor-pointer hover:shadow-md transition-all duration-700 ease-in-out">
             <img class="w-full h-4/6 object-contain" :src="data.image" :alt="data.name">
           </div>
@@ -204,6 +211,9 @@ export default {
         </div>
       </template>
     </Carousel>
+    <div v-else class="w-full h-80 flex items-center justify-center">
+      <p class="text-dark-primary text-lg font-medium">No Categories Found</p>
+    </div>
     </div>
 
 <!--    Popular brands-->

@@ -13,25 +13,41 @@ const router = createRouter({
     {
       path: '/home',
       name: 'home',
-      component: Home,
+      component: () => import('@/views/Products.vue'),
       meta: {
         layout: 'dashboard'
       },
     },
     {
-      path: '/categories/:category',
+      path: '/:category',
       name: 'categories',
       component: () => import('@/views/Products.vue'),
       meta: {
         layout: 'dashboard'
       },
-      children: [
-        {
-          path: "/categories/:category/:product",
-          name: "categories-product",
-          component: () => import('@/views/SingleProduct.vue'),
-        }
-      ]
+      // children: [
+      //   {
+      //     path: "/categories/:category/:product",
+      //     name: "categories-product",
+      //     component: () => import('@/views/SingleCategoryProducts.vue'),
+      //   }
+      // ]
+    },
+    {
+      path: '/:category/products',
+      name: 'CategoryProducts',
+      component: () => import('@/views/SingleCategoryProducts.vue'),
+      meta: {
+        layout: 'dashboard'
+      },
+    },
+    {
+      path: "/products/:productName",
+      name: "productDetails",
+      component: () => import('@/views/SingleProduct.vue'),
+      meta: {
+        layout: 'dashboard'
+      },
     },
     {
       path: '/login',
@@ -69,6 +85,14 @@ const router = createRouter({
       path: "/:pathMatch(.*)*",
       name: "not-found",
       redirect: "/home"
+    },
+    {
+      path: "/accounts/google/login",
+      name: "oauth",
+      component: () => import('@/views/OAuth.vue'),
+      meta: {
+        layout: 'blank'
+      }
     }
   ]
 })
