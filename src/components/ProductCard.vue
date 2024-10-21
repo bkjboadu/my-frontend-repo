@@ -5,6 +5,7 @@ import tvImage from '@/assets/tv.png'
 import bagImage from '@/assets/bag.png'
 import showImage from "@/assets/shoe.jfif"
 import WhislistIcon from '@/assets/WhislistIcon.vue'
+import useCartStore from '@/stores/cartStore.js'
 
 export default {
   name: 'ProductCard',
@@ -18,11 +19,28 @@ export default {
   },
   data() {
     return {
-      tvImage,
-      bagImage,
-      showImage
+      isLoading: false
     }
   },
+  computed: {
+    cartStore() {
+      return useCartStore()
+    }
+  },
+  methods: {
+    addToCart() {
+      this.isLoading = true
+      this.cartStore.addToCart(this.item?.id)
+        .then((response) => {
+          this.isLoading = false
+          this.$toast.add({severity: 'success', summary: 'Item added to cart', detail: response?.details, life: 3000})
+        })
+        .catch((error) => {
+          this.isLoading = false
+          this.$toast.add({severity: 'error', summary: 'Error adding item to cart', detail: error?.response?.data?.detail || 'An error occurred', life: 3000})
+        })
+    }
+  }
 }
 </script>
 
@@ -51,9 +69,10 @@ export default {
     </div>
     <app-button
       class="text-xs md:text-sm !text-dark-primary bg-[#EFEFEF] md:w-[95px] hover:!text-white hover:bg-dark-primary"
-      @click="$emit('add-to-cart', item)"
+      @click="addToCart"
     >
-      Add To Cart
+      <AppProgressSpinner style="width: 20px; height: 20px" v-if="isLoading" />
+      <span v-else>Add To Cart</span>
     </app-button>
   </div>
 </div>
