@@ -26,6 +26,7 @@ export default defineComponent({
 </script>
 
 <template>
+  <AppToast />
   <main class="w-screen overflow-x-hidden">
     <component :is="Layout"></component>
     <app-alert class="absolute"></app-alert>

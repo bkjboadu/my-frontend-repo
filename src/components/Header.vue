@@ -8,9 +8,10 @@ import Hamburger from '@/assets/icons/Hamburger.vue'
 import { categories } from '@/utils/staticFields.js'
 import { useCommonUtils } from '@/stores/commonStore.js'
 import Avatar from 'primevue/avatar';
+import OverlayBadge from 'primevue/overlaybadge';
 export default {
   name: 'AppHeader',
-  components: { Hamburger, BagIcon, HeartIcon, LocationIcon, Avatar },
+  components: { Hamburger, BagIcon, HeartIcon, LocationIcon, Avatar, OverlayBadge },
   data() {
     return {
       whiteLogo,
@@ -39,6 +40,9 @@ export default {
   methods: {
     goToLink(link) {
       this.$router.push(`/home${link}`)
+    },
+    goToCart() {
+      this.$router.push({ name: 'Cart' })
     },
     // toggleCategory(event) {
     //   const categoryBtn = this.$el.querySelector("#category")
@@ -82,7 +86,10 @@ export default {
         <!--      <close-icon></close-icon>-->
       </div>
       <div class="flex items-center gap-5 ml-auto">
-        <heart-icon class="cursor-pointer"></heart-icon>
+<!--        <OverlayBadge value="2">-->
+<!--          <i class="pi pi-bell" style="font-size: 1.5rem" />-->
+<!--        </OverlayBadge>-->
+        <heart-icon @click="goToCart()" class="cursor-pointer"></heart-icon>
         <bag-icon class="cursor-pointer"></bag-icon>
         <div v-if="isLoggedIn" class="flex items-center gap-2 user">
           <div>

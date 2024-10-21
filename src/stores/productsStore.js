@@ -64,6 +64,9 @@ const useProductStore = defineStore("products", {
       })
     },
     getSingleProduct() {
+      this.$patch({
+        loading: true
+      })
       Api.get(`/inventory/products/${this.singleProductId}/`)
         .then((response) => {
           this.$patch({
@@ -72,6 +75,11 @@ const useProductStore = defineStore("products", {
         })
         .catch((error) => {
           console.log(error);
+        })
+        .finally(() => {
+          this.$patch({
+            loading: false
+          })
         })
     }
   },

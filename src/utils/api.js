@@ -50,7 +50,11 @@ api.interceptors.response.use(
             return api.request(error.config);
           })
           .catch((error) => {
-            console.log(error);
+            if(error.response.status === 401) {
+              Cookies.remove('authToken');
+              Cookies.remove('refreshToken');
+              // window.location.href = '/login';
+            }
           });
       }
     }

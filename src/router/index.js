@@ -50,6 +50,14 @@ const router = createRouter({
       },
     },
     {
+      path: "/cart",
+      name: "Cart",
+      component: () => import('@/views/CartView.vue'),
+      meta: {
+        layout: 'dashboard'
+      },
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('@/views/Login.vue'),
