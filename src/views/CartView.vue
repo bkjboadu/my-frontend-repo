@@ -8,7 +8,7 @@ export default {
   components: { CartItem, EmptyCart, Toast },
   data() {
     return {
-      isLoading: true,
+      isLoading: false,
       quantity: 1
     }
   },
@@ -17,17 +17,18 @@ export default {
       return useCartStore()
     },
     cart() {
-      return this.cartStore?.cart[0] || {}
+      return this.cartStore?.cart?.items || []
     },
     subTotal() {
-      return this.cart?.items?.reduce((acc, item) => acc + item.total_price, 0)
+      return this.cart?.reduce((acc, item) => acc + item.total_price, 0)
     },
     overallTotal() {
-      return this.cart?.items?.reduce((acc, item) => acc + item.total_price, 0)
+      return this.cart?.reduce((acc, item) => acc + item.total_price, 0)
     }
   },
   methods: {},
   mounted() {
+    this.isLoading = true
     this.cartStore.getUserCartData()
       .then((response) => {
         this.$toast.add({severity: 'success', summary: 'Cart data fetched', detail: response?.details || 'Cart data fetched successfully', life: 3000})
@@ -43,13 +44,12 @@ export default {
 </script>
 
 <template>
-  <Toast />
   <AppLoader v-if="isLoading"/>
 
   <div v-else>
-    <div v-if="cart?.items?.length" class="flex gap-3">
-      <div class="w-full h-max">
-        <CartItem v-for="item in cart.items" :key="item.id" :item="item"/>
+    <div v-if="cart?.length" class="flex gap-3 mb-10">
+      <div class="w-full h-max flex flex-col gap-4">
+        <CartItem v-for="item in cart" :key="item.id" :item="item"/>
       </div>
       <div class="w-full h-max bg-[#FAFBFD] p-3">
         <h3 class="font-bold text-lg text-dark-primary">Summary</h3>

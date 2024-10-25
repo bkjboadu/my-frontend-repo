@@ -1,9 +1,6 @@
 <script>
 import FullRatingStar from '@/assets/icons/FullRatingStar.vue'
 import FastAndFreeDelivery from '@/assets/icons/FastAndFreeDelivery.vue'
-import tvImage from '@/assets/tv.png'
-import bagImage from '@/assets/bag.png'
-import showImage from "@/assets/shoe.jfif"
 import WhislistIcon from '@/assets/WhislistIcon.vue'
 import useCartStore from '@/stores/cartStore.js'
 
@@ -14,12 +11,14 @@ export default {
   props: {
     item: {
       type: Object,
-      required: true
+      required: true,
     }
   },
   data() {
     return {
-      isLoading: false
+      isLoading: false,
+      isWhislisted: this.item?.is_wishlist || false,
+      addingToWishlist: false
     }
   },
   computed: {
@@ -33,11 +32,36 @@ export default {
       this.cartStore.addToCart(this.item?.id)
         .then((response) => {
           this.isLoading = false
-          this.$toast.add({severity: 'success', summary: 'Item added to cart', detail: response?.details, life: 3000})
+          this.$toast.add({ severity: 'success', summary: 'Item added to cart', detail: response?.details, life: 3000 })
         })
         .catch((error) => {
           this.isLoading = false
-          this.$toast.add({severity: 'error', summary: 'Error adding item to cart', detail: error?.response?.data?.detail || 'An error occurred', life: 3000})
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Error adding item to cart',
+            detail: error?.response?.data?.detail || 'An error occurred',
+            life: 3000
+          })
+        })
+    },
+    addRemoveWishlist(event) {
+      event.stopPropagation()
+      this.addingToWishlist = true
+      let apiResponse = this.isWhislisted ? this.cartStore.removeFromWishlist(this.item?.id) : this.cartStore.addToWishlist(this.item?.id)
+      apiResponse
+        .then((response) => {
+          this.addingToWishlist = false
+          this.isWhislisted = !this.isWhislisted
+          this.$toast.add({ severity: 'success', summary: 'Item added to wishlist', detail: response?.details, life: 3000 })
+        })
+        .catch((error) => {
+          this.addingToWishlist = false
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Error adding item to wishlist',
+            detail: error?.response?.data?.detail || 'An error occurred',
+            life: 3000
+          })
         })
     }
   }
@@ -51,7 +75,15 @@ export default {
   @click="$emit('item-click', item)"
 >
   <img :src="item.image" :alt="item.sku" class="w-full h-full object-contain">
-  <WhislistIcon class="absolute top-3 right-3" />
+  <div v-if="addingToWishlist" class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white flex items-center justify-center">
+    <AppProgressSpinner style="width: 20px; height: 20px" />
+  </div>
+  <WhislistIcon
+    v-else
+    @click="addRemoveWishlist"
+    class="absolute top-3 right-3 hover:fill-dark-primary transition-all ease-in-out duration-700"
+    :fill="isWhislisted ? '#262F3D' : 'none'"
+  />
 </div>
   <div class="flex flex-col gap-1 md:gap-2 p-2 md:pl-3  bg-[#FCFCFC]">
     <h5 class="text-sm md:text-lg text-gray-700 font-light">{{item.name}}</h5>

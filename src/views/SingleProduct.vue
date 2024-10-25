@@ -24,19 +24,6 @@ export default {
     MasterCard, WarrantyIcon, FastAndFreeDelivery, FullRatingStar },
   data() {
     return {
-      desc: "The only difference between our Reboxed® and refurbished\n" +
-        "        iPhone 15 Pro Max 256GB and a brand new one is the price.\n" +
-        "        Our Reboxed® iPhone 15 Pro Max are a better deal than new. Our\n" +
-        "        Like New and premium models offer a great saving, plus, we\n" +
-        "        plant 5 trees for each one paying to offset its lifetime CO2\n" +
-        "        emissions.\n" +
-        "        Each reboxed® iPhone 15 Pro Max is TechCheck® certified by our\n" +
-        "        in-house engineers using our rigorous 70-point check before\n" +
-        "        being reboxed and sent.\n" +
-        "        The iPhone 15 Pro Max really is a fantastic iPhone thats sure to last\n" +
-        "        a long time with excellent battery life that promises up to 29\n" +
-        "        hours of video playback. Plenty of TikTok's or Netflix!\n" +
-        "        You also get a Super Retina XDR display, perfect for viewing",
       selectedDisplayImage: null
     }
   },
@@ -61,7 +48,7 @@ export default {
     <div class="w-full h-80 border px-5 flex items-center gap-4">
       <div class="flex flex-col gap-2 w-max">
         <div
-          v-for="item in singleProduct.product_images.slice(0, 4)"
+          v-for="item in singleProduct?.product_images.slice(0, 4)"
           :key="item" class="w-16 h-16 border rounded-xl overflow-hidden cursor-pointer"
           @click="selectedDisplayImage = item.image"
         >

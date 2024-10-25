@@ -1,5 +1,6 @@
 <script>
 import useCartStore from '@/stores/cartStore.js'
+import api from '@/utils/api.js'
 
 export default {
   name: 'CartItem',
@@ -12,7 +13,9 @@ export default {
   data() {
     return {
       quantity: this.item?.quantity || 1,
-      removing: false
+      removing: false,
+      increasing: false,
+      decreasing: false
     }
   },
   computed: {
@@ -37,6 +40,29 @@ export default {
         .finally(() => {
           this.removing = false
         })
+    },
+    increaseDecreaseQuantity(type) {
+      if (type === 'increase') {
+        this.increasing = true
+      }
+      if (type === 'decrease') {
+        this.decreasing = true
+      }
+      api.put(`/carts/cart/item/${this.item.id}/`, { quantity: type === 'increase' ? this.quantity + 1 : this.quantity - 1 })
+        .then((response) => {
+          this.cartStore.getUserCartData()
+            .then(() => {
+              this.quantity = this.item.quantity
+            })
+          this.$toast.add({severity: 'success', summary: 'Item quantity updated', detail: response?.details || 'Item quantity updated successfully', life: 3000})
+        })
+        .catch((error) => {
+          this.$toast.add({severity: 'error', summary: 'Error updating item quantity', detail: error?.response?.data?.detail || 'An error occurred', life: 3000})
+        })
+        .finally(() => {
+          this.increasing = false
+          this.decreasing = false
+        })
     }
   }
 }
@@ -60,14 +86,31 @@ export default {
       </p>
       <div class="mt-2 flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <i class="pi pi-minus-circle cursor-pointer hover:text-gray-500"></i>
+          <div>
+            <AppProgressSpinner v-if="decreasing" style="width: 20px; height: 20px" />
+            <i
+              v-else
+              class="pi pi-minus-circle cursor-pointer hover:text-gray-500"
+              @click="increaseDecreaseQuantity('decrease')"
+            ></i>
+          </div>
           <input
             class="w-12 h-8 text-center border border-gray-300"
             v-model="quantity"
           >
-          <i class="pi pi-plus-circle cursor-pointer hover:text-gray-500"></i>
+          <div>
+            <AppProgressSpinner v-if="increasing" style="width: 20px; height: 20px" />
+            <i
+              v-else
+              class="pi pi-plus-circle cursor-pointer hover:text-gray-500"
+              @click="increaseDecreaseQuantity('increase')"
+            ></i>
+          </div>
         </div>
-        <i class="pi pi-heart"></i>
+<!--        <i class="pi pi-heart"></i>-->
+        <div>
+          <span class="text-sm text-gray-500">Total price: Ghs {{item?.total_price}}</span>
+        </div>
       </div>
     </div>
   </div>
