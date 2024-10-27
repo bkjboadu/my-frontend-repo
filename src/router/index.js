@@ -58,6 +58,22 @@ const router = createRouter({
       },
     },
     {
+      path: "/wishlist",
+      name: "Wishlist",
+      component: () => import('@/views/WishlistView.vue'),
+      meta: {
+        layout: 'dashboard'
+      },
+    },
+    {
+      path: "/checkout",
+      name: "Checkout",
+      component: () => import('@/views/CheckoutView.vue'),
+      meta: {
+        layout: 'dashboard'
+      },
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('@/views/Login.vue'),

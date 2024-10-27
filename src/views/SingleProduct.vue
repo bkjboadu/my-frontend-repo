@@ -24,20 +24,8 @@ export default {
     MasterCard, WarrantyIcon, FastAndFreeDelivery, FullRatingStar },
   data() {
     return {
-      desc: "The only difference between our Reboxed® and refurbished\n" +
-        "        iPhone 15 Pro Max 256GB and a brand new one is the price.\n" +
-        "        Our Reboxed® iPhone 15 Pro Max are a better deal than new. Our\n" +
-        "        Like New and premium models offer a great saving, plus, we\n" +
-        "        plant 5 trees for each one paying to offset its lifetime CO2\n" +
-        "        emissions.\n" +
-        "        Each reboxed® iPhone 15 Pro Max is TechCheck® certified by our\n" +
-        "        in-house engineers using our rigorous 70-point check before\n" +
-        "        being reboxed and sent.\n" +
-        "        The iPhone 15 Pro Max really is a fantastic iPhone thats sure to last\n" +
-        "        a long time with excellent battery life that promises up to 29\n" +
-        "        hours of video playback. Plenty of TikTok's or Netflix!\n" +
-        "        You also get a Super Retina XDR display, perfect for viewing",
-      selectedDisplayImage: null
+      selectedDisplayImage: null,
+      adding: false
     }
   },
   computed: {
@@ -46,6 +34,28 @@ export default {
     },
     singleProduct() {
       return this.productStore.singleProduct
+    },
+    cartStore() {
+      return useCartStore()
+    }
+  },
+  methods: {
+    addToCart() {
+      this.adding = true
+      this.productStore.addToCart(this.singleProduct?.id)
+        .then((response) => {
+          this.adding = false
+          this.$toast.add({ severity: 'success', summary: 'Item added to cart', detail: response?.details, life: 3000 })
+        })
+        .catch((error) => {
+          this.adding = false
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Error adding item to cart',
+            detail: error?.response?.data?.detail || 'An error occurred',
+            life: 3000
+          })
+        })
     }
   },
   mounted() {
@@ -61,7 +71,7 @@ export default {
     <div class="w-full h-80 border px-5 flex items-center gap-4">
       <div class="flex flex-col gap-2 w-max">
         <div
-          v-for="item in singleProduct.product_images.slice(0, 4)"
+          v-for="item in singleProduct?.product_images.slice(0, 4)"
           :key="item" class="w-16 h-16 border rounded-xl overflow-hidden cursor-pointer"
           @click="selectedDisplayImage = item.image"
         >
@@ -83,7 +93,10 @@ export default {
           <span>GHS</span>
           <span>{{singleProduct?.price}}</span>
         </div>
-        <app-button class="bg-dark-primary hover:bg-opacity-50 transition-all ease-in duration-300">Add To Cart</app-button>
+        <app-button @click="addToCart()" class="bg-dark-primary hover:bg-opacity-50 transition-all ease-in duration-300">
+          <AppProgressSpinner style="width: 20px; height: 20px" v-if="adding" />
+          <span v-else>Add To Cart</span>
+        </app-button>
       </div>
       <div class="px-4 py-2 border-b flex gap-4">
         <div class="text-gray-700 text-xs md:text-base font-light flex gap-2 items-center">

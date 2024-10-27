@@ -1,7 +1,9 @@
 import axios from 'axios';
 import Cookies from 'js-cookie'
+import authStore from '@/stores/authStore.js'
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
+// const authStore = useAuthStore();
 
 const api = axios.create({
   baseURL,
@@ -56,6 +58,8 @@ api.interceptors.response.use(
               // window.location.href = '/login';
             }
           });
+      } else {
+        authStore().logout();
       }
     }
     return Promise.reject(error);

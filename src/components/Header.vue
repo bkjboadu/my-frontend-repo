@@ -11,7 +11,7 @@ import Avatar from 'primevue/avatar';
 import OverlayBadge from 'primevue/overlaybadge';
 export default {
   name: 'AppHeader',
-  components: { Hamburger, BagIcon, HeartIcon, LocationIcon, Avatar, OverlayBadge },
+  components: { Hamburger, BagIcon, HeartIcon, LocationIcon, Avatar },
   data() {
     return {
       whiteLogo,
@@ -43,6 +43,9 @@ export default {
     },
     goToCart() {
       this.$router.push({ name: 'Cart' })
+    },
+    goToWishlist() {
+      this.$router.push({ name: 'Wishlist' })
     },
     // toggleCategory(event) {
     //   const categoryBtn = this.$el.querySelector("#category")
@@ -89,8 +92,8 @@ export default {
 <!--        <OverlayBadge value="2">-->
 <!--          <i class="pi pi-bell" style="font-size: 1.5rem" />-->
 <!--        </OverlayBadge>-->
-        <heart-icon @click="goToCart()" class="cursor-pointer"></heart-icon>
-        <bag-icon class="cursor-pointer"></bag-icon>
+        <heart-icon @click="goToWishlist()" class="cursor-pointer hover:fill-blue-primary"></heart-icon>
+        <bag-icon @click="goToCart()" class="cursor-pointer hover:fill-blue-primary"></bag-icon>
         <div v-if="isLoggedIn" class="flex items-center gap-2 user">
           <div>
             <p class="text-xs text-gray-200">Hi there,</p>

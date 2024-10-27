@@ -13,10 +13,18 @@ const useCartStore = defineStore("cart", {
   },
   actions: {
     async getUserCartData() {
-      return api.get('/carts/cart/user/')
+      return api.get('/carts/cart/')
         .then(response => {
           this.$patch({
             cart: response.data
+          })
+        })
+    },
+    async getUserWishlistData() {
+      return api.get('/carts/wishlist/')
+        .then(response => {
+          this.$patch({
+            wishlist: response.data
           })
         })
     },
@@ -26,16 +34,19 @@ const useCartStore = defineStore("cart", {
       })
     },
     async removeFromCart(id) {
-      return api.delete(`/carts/cart/remove/${id}/`)
+      return api.delete(`/carts/cart/item/${id}/`)
     },
-    addToWishlist(product) {
-      this.wishlist.push(product)
-      this.wishlistTotal += product.price
+    async addToWishlist(id) {
+      return api.post(`/carts/wishlist/add/${id}/`)
     },
     removeFromWishlist(id) {
-      const index = this.wishlist.findIndex(product => product.id === id)
-      this.wishlistTotal -= this.wishlist[index].price
-      this.wishlist.splice(index, 1)
+      return api.delete(`/carts/wishlist/remove/${id}/`)
+    },
+    checkout() {
+      return api.post('/carts/cart/checkout/')
+    },
+    applyPromoCode(code) {
+      return api.post('/carts/cart/apply-code/', { code })
     }
   },
   getters: {
