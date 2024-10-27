@@ -34,13 +34,19 @@ const useCartStore = defineStore("cart", {
       })
     },
     async removeFromCart(id) {
-      return api.delete(`/carts/cart/remove/${id}/`)
+      return api.delete(`/carts/cart/item/${id}/`)
     },
     async addToWishlist(id) {
       return api.post(`/carts/wishlist/add/${id}/`)
     },
     removeFromWishlist(id) {
       return api.delete(`/carts/wishlist/remove/${id}/`)
+    },
+    checkout() {
+      return api.post('/carts/cart/checkout/')
+    },
+    applyPromoCode(code) {
+      return api.post('/carts/cart/apply-code/', { code })
     }
   },
   getters: {

@@ -52,13 +52,15 @@ const useAuthStore = defineStore("auth", {
         });
     },
     loginWithGoogle(code) {
-      api.post("/accounts/google-auth/", { code })
+      return api.post("/accounts/google-auth/", { code })
         .then((response) => {
-          console.log(response.data);
+          this.setUser(response.data?.user);
+          Cookies.set('authToken', response.data?.access);
+          Cookies.set("refreshToken", response.data?.refresh);
         })
-        .catch((error) => {
-          console.log(error);
-        })
+    },
+    sendPasswordResetEmail(email) {
+      return api.post("/accounts/password_reset/", { email })
     },
     setUser(user) {
       this.user = user;

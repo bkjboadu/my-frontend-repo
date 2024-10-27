@@ -24,7 +24,8 @@ export default {
     MasterCard, WarrantyIcon, FastAndFreeDelivery, FullRatingStar },
   data() {
     return {
-      selectedDisplayImage: null
+      selectedDisplayImage: null,
+      adding: false
     }
   },
   computed: {
@@ -33,6 +34,28 @@ export default {
     },
     singleProduct() {
       return this.productStore.singleProduct
+    },
+    cartStore() {
+      return useCartStore()
+    }
+  },
+  methods: {
+    addToCart() {
+      this.adding = true
+      this.productStore.addToCart(this.singleProduct?.id)
+        .then((response) => {
+          this.adding = false
+          this.$toast.add({ severity: 'success', summary: 'Item added to cart', detail: response?.details, life: 3000 })
+        })
+        .catch((error) => {
+          this.adding = false
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Error adding item to cart',
+            detail: error?.response?.data?.detail || 'An error occurred',
+            life: 3000
+          })
+        })
     }
   },
   mounted() {
@@ -70,7 +93,10 @@ export default {
           <span>GHS</span>
           <span>{{singleProduct?.price}}</span>
         </div>
-        <app-button class="bg-dark-primary hover:bg-opacity-50 transition-all ease-in duration-300">Add To Cart</app-button>
+        <app-button @click="addToCart()" class="bg-dark-primary hover:bg-opacity-50 transition-all ease-in duration-300">
+          <AppProgressSpinner style="width: 20px; height: 20px" v-if="adding" />
+          <span v-else>Add To Cart</span>
+        </app-button>
       </div>
       <div class="px-4 py-2 border-b flex gap-4">
         <div class="text-gray-700 text-xs md:text-base font-light flex gap-2 items-center">

@@ -20,56 +20,6 @@ export default {
   data() {
     return {
       electronics,
-      // topCategories: [
-      //   {
-      //     name: 'Laptops & Computers',
-      //     image: mac
-      //   },
-      //   {
-      //     name: 'TV & Home Theatres',
-      //     image: tv
-      //   },
-      //   {
-      //     name: 'Fridges & Freezers',
-      //     image: fridge
-      //   }
-      // ],
-      // subCategories: [
-      //   {
-      //     name: 'Laptops & Computers',
-      //     image: mac
-      //   },
-      //   {
-      //     name: 'TV & Home Theatres',
-      //     image: tv
-      //   },
-      //   {
-      //     name: 'Fridges & Freezers',
-      //     image: fridge
-      //   },{
-      //     name: 'Laptops & Computers',
-      //     image: mac
-      //   },
-      //   {
-      //     name: 'TV & Home Theatres',
-      //     image: tv
-      //   },
-      //   {
-      //     name: 'Fridges & Freezers',
-      //     image: fridge
-      //   },{
-      //     name: 'Laptops & Computers',
-      //     image: mac
-      //   },
-      //   {
-      //     name: 'TV & Home Theatres',
-      //     image: tv
-      //   },
-      //   {
-      //     name: 'Fridges & Freezers',
-      //     image: fridge
-      //   }
-      // ],
       responsiveOptions: [
         {
           breakpoint: '1400px',

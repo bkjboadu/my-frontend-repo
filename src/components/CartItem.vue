@@ -94,10 +94,11 @@ export default {
               @click="increaseDecreaseQuantity('decrease')"
             ></i>
           </div>
-          <input
-            class="w-12 h-8 text-center border border-gray-300"
-            v-model="quantity"
-          >
+<!--          <input-->
+<!--            class="w-12 h-8 text-center border border-gray-300"-->
+<!--            v-model="quantity"-->
+<!--          >-->
+          <p>{{quantity}}</p>
           <div>
             <AppProgressSpinner v-if="increasing" style="width: 20px; height: 20px" />
             <i

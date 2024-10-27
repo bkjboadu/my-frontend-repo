@@ -66,6 +66,14 @@ const router = createRouter({
       },
     },
     {
+      path: "/checkout",
+      name: "Checkout",
+      component: () => import('@/views/CheckoutView.vue'),
+      meta: {
+        layout: 'dashboard'
+      },
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('@/views/Login.vue'),
