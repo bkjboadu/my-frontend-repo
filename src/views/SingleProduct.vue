@@ -10,6 +10,7 @@ import ApplePay from '@/assets/icons/ApplePay.vue'
 import GooglePay from '@/assets/icons/GooglePay.vue'
 import BlueMasterCard from '@/assets/icons/BlueMasterCard.vue'
 import Amex from '@/assets/icons/Amex.vue'
+import useCartStore from '@/stores/cartStore.js'
 
 
 export default {
@@ -42,7 +43,7 @@ export default {
   methods: {
     addToCart() {
       this.adding = true
-      this.productStore.addToCart(this.singleProduct?.id)
+      this.cartStore.addToCart(this.singleProduct?.id)
         .then((response) => {
           this.adding = false
           this.$toast.add({ severity: 'success', summary: 'Item added to cart', detail: response?.details, life: 3000 })
@@ -79,11 +80,11 @@ export default {
         </div>
       </div>
       <div class="w-full h-full">
-        <img class="w-full h-full object-contain" :src="selectedDisplayImage" alt="display image">
+        <img class="w-full h-full object-contain" :src="selectedDisplayImage || singleProduct?.product_images[0]?.image" alt="display image">
       </div>
     </div>
     <div class="w-full h-max row-span-2 border border-gray-100">
-      <h4 class="text-xl px-4 py-2 border-b">{{singleProduct?.name}}  -  256GB</h4>
+      <h4 class="text-xl px-4 py-2 border-b">{{singleProduct?.name}}</h4>
       <div class="px-4 py-2 flex flex-col gap-4 border-b">
         <div class="flex gap-1 items-center text-sm text-gray-500">
           <FullRatingStar v-for="(rating, index) in 5" :key="index"/>
@@ -108,22 +109,22 @@ export default {
           <span>Free next day delivery on orders over $500</span>
         </div>
       </div>
-      <div class="px-4 py-2">
-        <div>
-          <h4 class="font-semibold text-gray-500">Capacity</h4>
-          <div class="mt-2">
-            <app-button class="border max-w-[132px] py-3 !rounded-lg !text-gray-500 hover:bg-[#D5CAFF] hover:border-[#5429FF] hover:!text-[#5429FF] transition-colors ease-in duration-300">500GB</app-button>
-          </div>
-        </div>
-        <div>
-          <h4 class="font-semibold text-gray-500">Color</h4>
-          <div class="mt-2">
-            <app-button class="border max-w-[132px] py-3 !rounded-lg !text-gray-500 hover:bg-[#D5CAFF] hover:border-[#5429FF] hover:!text-[#5429FF] transition-colors ease-in duration-300">
-              Black Titanium
-            </app-button>
-          </div>
-        </div>
-      </div>
+<!--      <div class="px-4 py-2">-->
+<!--        <div>-->
+<!--          <h4 class="font-semibold text-gray-500">Capacity</h4>-->
+<!--          <div class="mt-2">-->
+<!--            <app-button class="border max-w-[132px] py-3 !rounded-lg !text-gray-500 hover:bg-[#D5CAFF] hover:border-[#5429FF] hover:!text-[#5429FF] transition-colors ease-in duration-300">500GB</app-button>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div>-->
+<!--          <h4 class="font-semibold text-gray-500">Color</h4>-->
+<!--          <div class="mt-2">-->
+<!--            <app-button class="border max-w-[132px] py-3 !rounded-lg !text-gray-500 hover:bg-[#D5CAFF] hover:border-[#5429FF] hover:!text-[#5429FF] transition-colors ease-in duration-300">-->
+<!--              Black Titanium-->
+<!--            </app-button>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
     </div>
     <div class="w-full h-max p-4 border">
       <h3 class="text-lg text-gray-700 font-medium">Description</h3>
@@ -175,26 +176,26 @@ export default {
   </div>
 
 <!--  reviews-->
-<!--  <div class="w-full h-max p-4 border mt-6">-->
-<!--    <h3 class="text-lg text-gray-700 font-medium">Ratings & Reviews</h3>-->
-<!--    <div class="flex items-center justify-between">-->
-<!--      <div>-->
-<!--        <p class="text-lg font-bold text-dark-primary">4.5</p>-->
-<!--        <span class="text-gray-500 text-sm">Based on 10 reviews</span>-->
-<!--      </div>-->
-<!--      <app-button class="bg-dark-primary w-max px-4">Write Review</app-button>-->
-<!--    </div>-->
-<!--    <div>-->
-<!--      <div>-->
-<!--        <div>-->
-<!--          <span>Sort</span>-->
-<!--          <span></span>-->
-<!--        </div>-->
-<!--        <div></div>-->
-<!--      </div>-->
-<!--      <div></div>-->
-<!--    </div>-->
-<!--  </div>-->
+  <div class="w-full h-max p-4 border mt-6">
+    <h3 class="text-lg text-gray-700 font-medium">Ratings & Reviews</h3>
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-lg font-bold text-dark-primary">4.5</p>
+        <span class="text-gray-500 text-sm">Based on 10 reviews</span>
+      </div>
+      <app-button class="bg-dark-primary w-max px-4">Write Review</app-button>
+    </div>
+    <div>
+      <div>
+        <div>
+          <span>Sort</span>
+          <span></span>
+        </div>
+        <div></div>
+      </div>
+      <div></div>
+    </div>
+  </div>
 </section>
 </template>
 

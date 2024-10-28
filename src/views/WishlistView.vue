@@ -40,8 +40,8 @@ export default {
     <AppLoader v-if="isLoading"/>
     <div v-else>
       <h1 class="text-dark-primary font-bold text-2xl">Wishlist</h1>
-      <div v-if="wishlist.length" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mt-5">
-        <ProductCard v-for="item in wishlist" :key="item.id" :item="item"/>
+      <div v-if="wishlist.length" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mt-5 gap-4 w-max">
+        <ProductCard v-for="item in wishlist" :key="item.id" :item="item?.product"/>
       </div>
       <div v-else class="w-full h-96 flex flex-col items-center justify-center">
         <EmptyWishlist class="text-gray-500" height="200" width="200" />
