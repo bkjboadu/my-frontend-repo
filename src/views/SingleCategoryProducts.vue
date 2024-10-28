@@ -19,10 +19,10 @@ export default {
           key: "price",
           label: 'Price',
           filters: [
-            {text: "Under $200", value: "Under $200", isChecked: false},
-            {text: "$200 - $500", value: "$200 - $500", isChecked: false},
-            {text: "$500 - $1000", value: "$500 - $1000", isChecked: false},
-            {text: "Above $1000", value: "Above $1000", isChecked: false},
+            {text: "Under Ghs 200", value: "price_max=200", isChecked: false},
+            {text: "Ghs 200 - Ghs 500", value: "price_min=200&price_max=500", isChecked: false},
+            {text: "Ghs 500 - Ghs 1000", value: "price_min=500&price_max=1000", isChecked: false},
+            {text: "Above Ghs 1000", value: "price_min=1000", isChecked: false},
           ]
         },
         {
@@ -60,7 +60,8 @@ export default {
           ]
         },
       ],
-      selectedKeys: []
+      selectedKeys: [],
+      isFiltered: false
     };
   },
   computed: {
@@ -77,6 +78,12 @@ export default {
     },
     singleCategory() {
       return this.productStore.singleCategory
+    },
+    filteredProducts() {
+      return this.productStore.filteredProducts
+    },
+    products() {
+      return this.isFiltered ? this.filteredProducts : this.singleCategory?.products
     }
   },
   methods: {
@@ -86,12 +93,46 @@ export default {
     goToProduct(item) {
       this.productStore.setSingleProductId(item.id)
       this.$router.push({name: 'productDetails', params: {productName: item.name}})
+    },
+    handleCheckFilter(value, nodeIndex, filterIndex) {
+      this.nodes[nodeIndex].filters.forEach((filter, index) => {
+        if (index === filterIndex) {
+          filter.isChecked = value
+        } else {
+          filter.isChecked = false
+        }
+      })
     }
   },
   watch: {
     $route(to, from) {
       this.productStore.setSingleCategory(null)
+      this.productStore.updateFilteredProducts([])
       this.productStore.getCategoryDetails()
+    },
+    nodes: {
+      handler(newVal) {
+        const query = newVal.map(node => {
+          return node.filters.filter(filter => filter.isChecked).map(filter => filter.value)
+        }).reduce((acc, curr) => acc.concat(curr), []).join('&')
+
+        if(query) {
+          this.isFiltered = true
+          this.productStore.filterProducts(query + `&category=${this.singleCategory?.id}`)
+        } else {
+          this.isFiltered = false
+          this.productStore.updateFilteredProducts([])
+        }
+
+
+        // const selectedFilters = newVal.map(node => {
+        //   return {
+        //     key: node.key,
+        //     filters: node.filters.filter(filter => filter.isChecked)
+        //   }
+        // })
+      },
+      deep: true
     }
   },
   mounted() {
@@ -99,6 +140,7 @@ export default {
   },
   beforeUnmount() {
     this.productStore.setSingleCategory(null)
+    this.productStore.updateFilteredProducts([])
   },
 }
 </script>
@@ -110,8 +152,8 @@ export default {
         <h4 class="text-blue-primary font-medium text-lg border-b pb-1">Filters</h4>
         <Accordion :value="['price']" multiple>
           <AccordionPanel
-            v-for="(node, index) in nodes"
-            :key="index"
+            v-for="(node, nodeIndex) in nodes"
+            :key="nodeIndex"
             class="!border-0"
             :value="node.key"
           >
@@ -119,14 +161,15 @@ export default {
             <AccordionContent>
               <ul>
                 <li
-                  v-for="(filter, index) in node.filters"
-                  :key="index"
+                  v-for="(filter, filterIndex) in node.filters"
+                  :key="filterIndex"
                   class="!p-2 flex items-center gap-4 cursor-pointer hover:bg-gray-100 transition-colors duration-700 ease-in-out rounded-md"
                 >
                   <Checkbox
                     v-model="filter.isChecked"
                     :inputId="filter.text"
                     binary
+                    @update:modelValue="handleCheckFilter($event, nodeIndex, filterIndex)"
                   />
                   <label class="cursor-pointer" :for="filter.text">{{filter.text}}</label>
                 </li>
@@ -142,9 +185,9 @@ export default {
         </div>
         <AppLoader v-if="productStore.loading" />
         <div class="flex items-center justify-center w-full" v-else>
-          <div v-if="singleCategory?.products.length" class="grid grid-cols-2 md:grid-cols-3 gap-4 w-max">
+          <div v-if="products?.length" class="grid grid-cols-2 md:grid-cols-3 gap-4 w-max">
             <ProductCard
-              v-for="(product, index) in singleCategory?.products"
+              v-for="(product, index) in products"
               :key="index"
               :item="product"
               @item-click="goToProduct"

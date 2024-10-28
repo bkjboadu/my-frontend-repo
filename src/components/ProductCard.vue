@@ -3,6 +3,7 @@ import FullRatingStar from '@/assets/icons/FullRatingStar.vue'
 import FastAndFreeDelivery from '@/assets/icons/FastAndFreeDelivery.vue'
 import WhislistIcon from '@/assets/WhislistIcon.vue'
 import useCartStore from '@/stores/cartStore.js'
+import useProductStore from '@/stores/productsStore.js'
 
 export default {
   name: 'ProductCard',
@@ -17,16 +18,26 @@ export default {
   data() {
     return {
       isLoading: false,
-      isWhislisted: this.item?.is_wishlist || false,
+      isWhislisted: this.item?.is_in_wishlist	 || false,
       addingToWishlist: false
     }
   },
   computed: {
     cartStore() {
       return useCartStore()
+    },
+    productStore() {
+      return useProductStore()
+    },
+    mainImage() {
+      return this.item?.product_images?.find(image => image.is_main)?.image || this.item?.product_images?.[0]?.image || ''
     }
   },
   methods: {
+    goToProduct() {
+      this.productStore.setSingleProductId(this.item.id)
+      this.$router.push({name: 'productDetails', params: {productName: this.item.name}})
+    },
     addToCart() {
       this.isLoading = true
       this.cartStore.addToCart(this.item?.id)
@@ -72,9 +83,9 @@ export default {
 <div class="w-[149px] md:w-[250px] bg-white pb-2">
 <div
   class="relative w-full h-[122px] md:h-[207px] bg-[#E8EDF5] flex items-center justify-center overflow-hidden cursor-pointer"
-  @click="$emit('item-click', item)"
+  @click="goToProduct()"
 >
-  <img :src="item.image" :alt="item.sku" class="w-full h-full object-contain">
+  <img :src="mainImage" :alt="item.sku" class="w-full h-full object-contain">
   <div v-if="addingToWishlist" class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white flex items-center justify-center">
     <AppProgressSpinner style="width: 20px; height: 20px" />
   </div>

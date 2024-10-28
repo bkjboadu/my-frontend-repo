@@ -10,7 +10,7 @@ const useProductStore = defineStore("products", {
       storeDetails: {},
       allCategories: ["All", "Electronics", "Clothing", "Books"],
       singleCategory: null,
-      products: [],
+      filteredProducts: [],
       singleProduct: null,
       singleProductId: null,
       singleCategoryId: null,
@@ -81,6 +81,30 @@ const useProductStore = defineStore("products", {
             loading: false
           })
         })
+    },
+    filterProducts(query) {
+      this.$patch({
+        loading: true
+      })
+      Api.get(`/inventory/products/?${query}`)
+        .then((response) => {
+          this.$patch({
+            filteredProducts: response.data
+          })
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .finally(() => {
+          this.$patch({
+            loading: false
+          })
+        })
+    },
+    updateFilteredProducts(products) {
+      this.$patch({
+        filteredProducts: products
+      })
     }
   },
   persist: true
