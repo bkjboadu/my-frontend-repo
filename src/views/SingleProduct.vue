@@ -11,6 +11,8 @@ import GooglePay from '@/assets/icons/GooglePay.vue'
 import BlueMasterCard from '@/assets/icons/BlueMasterCard.vue'
 import Amex from '@/assets/icons/Amex.vue'
 import useCartStore from '@/stores/cartStore.js'
+import ProductReviews from '@/components/ProductReviews.vue'
+import ProductQuestions from '@/components/ProductQuestions.vue'
 
 
 export default {
@@ -22,11 +24,18 @@ export default {
     ApplePay,
     ShopCard,
     VisaCard,
-    MasterCard, WarrantyIcon, FastAndFreeDelivery, FullRatingStar },
+    MasterCard,
+    WarrantyIcon,
+    FastAndFreeDelivery,
+    FullRatingStar,
+    "Product Reviews": ProductReviews,
+    Questions: ProductQuestions
+  },
   data() {
     return {
       selectedDisplayImage: null,
-      adding: false
+      adding: false,
+      activeReviewTab: 'Product Reviews'
     }
   },
   computed: {
@@ -178,7 +187,7 @@ export default {
 <!--  reviews-->
   <div class="w-full h-max p-4 border mt-6">
     <h3 class="text-lg text-gray-700 font-medium">Ratings & Reviews</h3>
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between py-4 border-b">
       <div>
         <p class="text-lg font-bold text-dark-primary">4.5</p>
         <span class="text-gray-500 text-sm">Based on 10 reviews</span>
@@ -186,14 +195,27 @@ export default {
       <app-button class="bg-dark-primary w-max px-4">Write Review</app-button>
     </div>
     <div>
-      <div>
-        <div>
-          <span>Sort</span>
-          <span></span>
+      <div class="flex items-center justify-between py-4 border-b">
+        <div class="text-sm flex items-center gap-4">
+          <p class="flex items-center gap-2">
+            <span>Sort</span>
+            <i class="pi pi-angle-down"></i>
+          </p>
+          <p class="flex items-center gap-2">
+            <i class="pi pi-search"></i>
+            <span>Search</span>
+          </p>
         </div>
-        <div></div>
+        <div class="flex items-center gap-4">
+          <app-button :class="['w-max !py-1', activeReviewTab === 'Product Reviews' ? '!text-dark-primary border-b-[3px] border-dark-primary' : '!text-blue-primary']" @click="activeReviewTab = 'Product Reviews' ">Product Reviews</app-button>
+          <app-button :class="['w-max !py-1', activeReviewTab === 'Questions' ? '!text-dark-primary border-b-[3px] border-dark-primary' : '!text-blue-primary']" @click="activeReviewTab = 'Questions'">Questions</app-button>
+        </div>
       </div>
-      <div></div>
+      <component
+        :is="activeReviewTab"
+        :reviews="singleProduct?.reviews"
+        :productName="singleProduct?.name"
+      />
     </div>
   </div>
 </section>

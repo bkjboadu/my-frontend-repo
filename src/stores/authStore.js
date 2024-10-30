@@ -52,7 +52,8 @@ const useAuthStore = defineStore("auth", {
         });
     },
     loginWithGoogle(code) {
-      return api.post("/accounts/google-auth/", { code })
+    const env = import.meta.env.VITE_NODE_ENV;
+      return api.post("/accounts/google-auth/", { code, env })
         .then((response) => {
           this.setUser(response.data?.user);
           Cookies.set('authToken', response.data?.access);
