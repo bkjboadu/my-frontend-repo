@@ -171,17 +171,7 @@ export default {
       currency: "ghs"
     }).create('card');
 
-    // this.$nextTick(() => {
-    // });
       this.card.mount('#card-element');
-
-      this.card.on("change", (event) => {
-        console.log(event)
-      })
-    // this.card = (await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)).elements("card")
-    // this.card.mount("#card-element")
-    //
-    // console.log(this.card)
   }
 }
 </script>
