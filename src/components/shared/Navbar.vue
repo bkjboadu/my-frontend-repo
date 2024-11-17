@@ -1,15 +1,12 @@
 <script>
-import DownIcon from '@/assets/icons/DownIcon.vue'
-import HamburgerClose from '@/assets/icons/HamburgerClose.vue'
 import Drawer from 'primevue/drawer';
 import Menubar from 'primevue/menubar';
 import { useCommonUtils } from '@/stores/commonStore.js'
 import useProductStore from '@/stores/productsStore.js'
-import productsStore from '@/stores/productsStore.js'
 
 export default {
   name: 'AppNavbar',
-  components: { DownIcon, Drawer, Menubar },
+  components: { Drawer, Menubar },
   data() {
     return {
     }
@@ -21,25 +18,39 @@ export default {
     productStore() {
       return useProductStore()
     },
+    // items() {
+    //   return [
+    //     { label: 'Categories', icon: 'pi pi-fw pi-th-large', items: this.productStore?.storeDetails?.categories?.map(category => {
+    //       return {
+    //         label: category.name,
+    //         command: () => {
+    //           const routeParam = category.name.toLowerCase().replace(/ /g, '-').replace(/&/g, 'and')
+    //           this.productStore.setSingleCategoryId(category.id)
+    //           this.$router.push({name: "CategoryProducts", params: {category: routeParam} })
+    //         },
+    //       }
+    //       }) || [
+    //         {label: "No Categories", icon: 'pi pi-fw pi-ban'}
+    //       ] },
+    //     { label: 'Deal For the Day', icon: 'pi pi-fw pi-calendar' },
+    //     { label: 'Top Deals', icon: 'pi pi-fw pi-star' },
+    //     { label: 'Fashion Finds', icon: 'pi pi-fw pi-shopping-cart' },
+    //     { label: 'Discount Sales', icon: 'pi pi-fw pi-percent' },
+    //     { label: 'Keep Fit', icon: 'pi pi-fw pi-heart' }
+    //   ]
+    // }
     items() {
-      return [
-        { label: 'Categories', icon: 'pi pi-fw pi-th-large', items: this.productStore?.storeDetails?.categories?.map(category => {
-          return {
-            label: category.name,
-            command: () => {
-              const routeParam = category.name.toLowerCase().replace(/ /g, '-').replace(/&/g, 'and')
-              this.productStore.setSingleCategoryId(category.id)
-              this.$router.push({name: "CategoryProducts", params: {category: routeParam} })
-            },
-          }
-          }) || [
-            {label: "No Categories", icon: 'pi pi-fw pi-ban'}
-          ] },
-        { label: 'Deal For the Day', icon: 'pi pi-fw pi-calendar' },
-        { label: 'Top Deals', icon: 'pi pi-fw pi-star' },
-        { label: 'Fashion Finds', icon: 'pi pi-fw pi-shopping-cart' },
-        { label: 'Discount Sales', icon: 'pi pi-fw pi-percent' },
-        { label: 'Keep Fit', icon: 'pi pi-fw pi-heart' }
+      return this.productStore?.storeDetails?.categories?.map(category => {
+        return {
+          label: category.name,
+          command: () => {
+            const routeParam = category.name.toLowerCase().replace(/ /g, '-').replace(/&/g, 'and')
+            this.productStore.setSingleCategoryId(category.id)
+            this.$router.push({name: "CategoryProducts", params: {category: routeParam} })
+          },
+        }
+      }) || [
+        {label: "No Categories", icon: 'pi pi-fw pi-ban'}
       ]
     }
   },

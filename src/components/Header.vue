@@ -8,16 +8,21 @@ import Hamburger from '@/assets/icons/Hamburger.vue'
 import { categories } from '@/utils/staticFields.js'
 import { useCommonUtils } from '@/stores/commonStore.js'
 import Avatar from 'primevue/avatar';
-import OverlayBadge from 'primevue/overlaybadge';
+import Menu from 'primevue/menu';
 export default {
   name: 'AppHeader',
-  components: { Hamburger, BagIcon, HeartIcon, LocationIcon, Avatar },
+  components: { Hamburger, BagIcon, HeartIcon, LocationIcon, Avatar, Menu },
   data() {
     return {
       whiteLogo,
       isCategoryOpen: false,
       openMenu: false,
-      categories
+      categories,
+      list: [
+        // { label: 'Profile', icon: 'pi pi-user', to: '/profile' },
+        // { label: 'Settings', icon: 'pi pi-cog', to: '/settings' },
+        { label: 'Logout', icon: 'pi pi-power-off', to: '/logout', command: () => this.logout() }
+      ]
     }
   },
   computed: {
@@ -46,6 +51,12 @@ export default {
     },
     goToWishlist() {
       this.$router.push({ name: 'Wishlist' })
+    },
+    toggleMenu(event) {
+      this.$refs.menu.toggle(event)
+    },
+    logout() {
+      this.authStore.logout()
     },
     // toggleCategory(event) {
     //   const categoryBtn = this.$el.querySelector("#category")
@@ -77,7 +88,7 @@ export default {
         <location-icon></location-icon>
         <div>
           <p class="text-xs text-gray-300">Deliver to</p>
-          <p class="font-semibold text-white">Sacramento, CA 95829</p>
+          <p class="font-semibold text-white">{{userDetails?.shipping_address || "N/A"}}</p>
         </div>
       </div>
       <div class="w-[447px] h-10 search">
@@ -100,12 +111,15 @@ export default {
             <p class="text-white font-semibold">{{userDetails?.first_name}}</p>
           </div>
           <Avatar
+            class="cursor-pointer"
             :label="userInitials"
             size=""
             :icon="userInitials"
             style="background-color: #dee9fc; color: #1a2551" shape="circle"
             :image="userDetails?.avatar"
+            @click="toggleMenu"
           />
+          <Menu ref="menu" :model="list" popup appendTo="body" />
 <!--          <div class="w-8 h-8 rounded-full overflow-hidden">-->
 <!--            <img class="w-full h-full object-cover" src="" alt="profile">-->
 <!--          </div>-->

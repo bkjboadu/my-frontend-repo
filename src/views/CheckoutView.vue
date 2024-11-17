@@ -12,6 +12,8 @@ import RadioButton from 'primevue/radiobutton'
 import OverlayBadge from 'primevue/overlaybadge'
 import useCartStore from '@/stores/cartStore.js'
 import api from '@/utils/api.js'
+import useOrderAndPaymentStore from '@/stores/orderAndPaymentStore.js'
+import { loadStripe } from '@stripe/stripe-js'
 
 
 export default {
@@ -33,7 +35,8 @@ export default {
     return {
       first_name: '',
       last_name: '',
-      address: '',
+      billing_address: '',
+      shipping_address: '',
       city: '',
       country: '',
       state: '',
@@ -51,7 +54,10 @@ export default {
       expressCheckout: '',
       placingOrder: false,
       promo_code: '',
-      applyingPromo: false
+      applyingPromo: false,
+      card: null,
+      elements: null,
+      stripe: null
     }
   },
   computed: {
@@ -69,39 +75,59 @@ export default {
     },
     overallTotal() {
       return this.cart?.reduce((acc, item) => acc + item.total_price, 0)
+    },
+    orderStore() {
+      return useOrderAndPaymentStore()
+    },
+    paymentIntentId() {
+      return this.orderStore?.stripePaymentIntentId || ''
+    },
+    clientSecret() {
+      return this.orderStore?.stripeClientSecret || ''
     }
   },
   methods: {
-    placeOrder() {
+    async placeOrder() {
       this.placingOrder = true
+      const { error } = await this.stripe.confirmCardPayment(this.clientSecret, {
+        payment_method: {
+          card: this.card,
+        },
+      });
 
-      const payload = {
-        shipping_address: this.address,
-        billing_address: this.address,
+      if(error) {
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Error placing order',
+          detail: error?.message || 'An error occurred',
+          life: 3000
+        })
+        this.placingOrder = false
+        return;
       }
 
-      payload.cart = this.cart.map(item => {
-        return {
-          product_id: item.id,
-          quantity: item.quantity
-        }
-      })
-
-      api.post("/orders/", payload)
-        .then((response) => {
+      const payload = {
+        clientSecret: this.clientSecret,
+        cart: this.cart,
+        shipping_address: this.shipping_address,
+        billing_address: this.billing_address,
+      }
+      api
+        .post("/payments/stripe-confirm-payment/", payload)
+        .then(response => {
           this.$toast.add({
             severity: 'success',
-            summary: 'Order placed successfully',
-            detail: response?.details || 'Order placed successfully',
+            summary: 'Order placed',
+            detail: response?.message || 'Order placed successfully',
             life: 3000
           })
           this.cartStore.getUserCartData()
         })
-        .catch((error) => {
+        .catch(error => {
           this.$toast.add({
             severity: 'error',
             summary: 'Error placing order',
-            detail: error?.response?.data?.detail || 'An error occurred',
+            detail: error?.response?.data?.details || 'An error occurred',
             life: 3000
           })
         })
@@ -124,7 +150,7 @@ export default {
           this.$toast.add({
             severity: 'error',
             summary: 'Error applying promo code',
-            detail: error?.response?.data?.detail || 'An error occurred',
+            detail: error?.response?.data?.details || 'An error occurred',
             life: 3000
           })
         })
@@ -133,8 +159,29 @@ export default {
         })
     }
   },
-  mounted() {
-    console.log(this.cart)
+  async mounted() {
+    await this.cartStore.getUserCartData()
+    this.stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)
+    this.card = this.stripe.elements({
+      fonts: [
+        {
+          cssSrc: 'https://fonts.googleapis.com/css?family=Roboto',
+        },
+      ],
+      currency: "ghs"
+    }).create('card');
+
+    // this.$nextTick(() => {
+    // });
+      this.card.mount('#card-element');
+
+      this.card.on("change", (event) => {
+        console.log(event)
+      })
+    // this.card = (await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)).elements("card")
+    // this.card.mount("#card-element")
+    //
+    // console.log(this.card)
   }
 }
 </script>
@@ -144,15 +191,16 @@ export default {
     <div class="basis-3/5 w-full">
       <h1 class="text-dark-primary font-bold text-2xl">Billing Information</h1>
       <div class="grid grid-cols-2 gap-y-4 gap-x-6 mt-4">
-        <app-input-field v-model="first_name" label="First Name"></app-input-field>
-        <app-input-field v-model="last_name" label="Last Name"></app-input-field>
-        <app-input-field v-model="address" label="Address"></app-input-field>
-        <app-input-field v-model="city" label="City"></app-input-field>
-        <app-input-field v-model="country" label="Country"></app-input-field>
-        <div class="flex items-center gap-4">
-          <app-input-field v-model="state" class="w-full" label="State"></app-input-field>
-          <app-input-field v-model="zip_code" class="w-full" label="Zip code"></app-input-field>
-        </div>
+<!--        <app-input-field v-model="first_name" label="First Name"></app-input-field>-->
+<!--        <app-input-field v-model="last_name" label="Last Name"></app-input-field>-->
+        <app-input-field v-model="billing_address" label="Billing Address"></app-input-field>
+        <app-input-field v-model="shipping_address" label="Shipping Address"></app-input-field>
+<!--        <app-input-field v-model="city" label="City"></app-input-field>-->
+<!--        <app-input-field v-model="country" label="Country"></app-input-field>-->
+<!--        <div class="flex items-center gap-4">-->
+<!--          <app-input-field v-model="state" class="w-full" label="State"></app-input-field>-->
+<!--          <app-input-field v-model="zip_code" class="w-full" label="Zip code"></app-input-field>-->
+<!--        </div>-->
       </div>
       <div class="mt-4 flex items-center gap-2">
         <Checkbox v-model="saveInfo" binary="true" inputId="binary"></Checkbox>
@@ -164,49 +212,53 @@ export default {
 
       <!--      payment details-->
       <div class="mt-10 w-full">
-        <h1 class="text-dark-primary font-bold text-2xl">Payment Details</h1>
-        <div class="w-full flex items-center gap-3">
-          <div class="border border-[#9CA3AF] py-2 w-max flex items-center justify-center basis-2/4 gap-2 ">
-            <Amex />
-            <!--            <ApplePay/>-->
-            <!--            <GooglePay/>-->
-            <BlueMasterCard />
-            <MasterCard />
-            <!--            <ShopCard />-->
-            <VisaCard />
-          </div>
-          <app-select
-            v-model="expressCheckout"
-            :options="expressCheckoutOptions"
-            class="w-full md:w-56 basis-2/4"
-            optionLabel="name"
-            placeholder="Express checkout"
-          >
-            <template #option="{option}">
-              <div class="flex items-center gap-2">
-                <RadioButton v-model="selectedCheckoutMethod" :value="option.name" />
-                <component :is="option.image" />
-              </div>
-            </template>
-          </app-select>
-        </div>
-        <h3 class="mt-6 mb-3">Credit Card Information</h3>
-        <div class="w-full flex items-center gap-4">
-          <app-input-field
-            v-model="card_number"
-            class="basis-3/5"
-            label="Card Number"
-          ></app-input-field>
-          <app-input-field
-            v-model="expire_date"
-            class="basis-1/5"
-            label="Expires(mm/yy)"
-          ></app-input-field>
-          <app-input-field
-            v-model="cvv"
-            class="basis-1/5"
-            label="CVV"
-          ></app-input-field>
+<!--        <h1 class="text-dark-primary font-bold text-2xl">Payment Details</h1>-->
+<!--        <div class="w-full flex items-center gap-3">-->
+<!--          <div class="border border-[#9CA3AF] py-2 w-max flex items-center justify-center basis-2/4 gap-2 ">-->
+<!--            <Amex />-->
+<!--            &lt;!&ndash;            <ApplePay/>&ndash;&gt;-->
+<!--            &lt;!&ndash;            <GooglePay/>&ndash;&gt;-->
+<!--            <BlueMasterCard />-->
+<!--            <MasterCard />-->
+<!--            &lt;!&ndash;            <ShopCard />&ndash;&gt;-->
+<!--            <VisaCard />-->
+<!--          </div>-->
+<!--          <app-select-->
+<!--            v-model="expressCheckout"-->
+<!--            :options="expressCheckoutOptions"-->
+<!--            class="w-full md:w-56 basis-2/4"-->
+<!--            optionLabel="name"-->
+<!--            placeholder="Express checkout"-->
+<!--          >-->
+<!--            <template #option="{option}">-->
+<!--              <div class="flex items-center gap-2">-->
+<!--                <RadioButton v-model="selectedCheckoutMethod" :value="option.name" />-->
+<!--                <component :is="option.image" />-->
+<!--              </div>-->
+<!--            </template>-->
+<!--          </app-select>-->
+<!--        </div>-->
+<!--        <h3 class="mt-6 mb-3">Credit Card Information</h3>-->
+<!--        <div class="w-full flex items-center gap-4">-->
+<!--          <app-input-field-->
+<!--            v-model="card_number"-->
+<!--            class="basis-3/5"-->
+<!--            label="Card Number"-->
+<!--          ></app-input-field>-->
+<!--          <app-input-field-->
+<!--            v-model="expire_date"-->
+<!--            class="basis-1/5"-->
+<!--            label="Expires(mm/yy)"-->
+<!--          ></app-input-field>-->
+<!--          <app-input-field-->
+<!--            v-model="cvv"-->
+<!--            class="basis-1/5"-->
+<!--            label="CVV"-->
+<!--          ></app-input-field>-->
+<!--        </div>-->
+        <div class="mt-6">
+          <label class="block text-gray-700 mb-2">Card Details</label>
+          <div ref="cardElement" id="card-element" class="p-4 border border-gray-300 rounded"></div>
         </div>
       </div>
     </div>
