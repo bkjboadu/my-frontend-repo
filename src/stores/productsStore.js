@@ -5,7 +5,7 @@ import Api from '@/utils/api.js'
 const useProductStore = defineStore("products", {
   state() {
     return {
-      storeId: 12,
+      storeId: 34,
       storeName: "My Store",
       storeDetails: {},
       allCategories: ["All", "Electronics", "Clothing", "Books"],
@@ -19,7 +19,7 @@ const useProductStore = defineStore("products", {
   },
   actions: {
     getStoreDetails() {
-      Api.get('/inventory/stores/12/')
+      Api.get('/inventory/stores/34/')
         .then((response) => {
           this.$patch({
             storeDetails: response.data

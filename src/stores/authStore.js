@@ -67,6 +67,10 @@ const useAuthStore = defineStore("auth", {
       this.user = user;
     },
     logout() {
+      Cookies.remove('authToken');
+      Cookies.remove('refreshToken');
+      localStorage.clear();
+      router.push({ name: 'Home' });
       this.user = null;
     },
   },

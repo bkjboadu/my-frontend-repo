@@ -97,7 +97,6 @@ export default {
 
         const response = await axios.get('http://127.0.0.1:8000/carts/cart');
         this.cart = response.data;
-        console.log(this.cart);
       } catch (error) {
         console.error(error);
       }

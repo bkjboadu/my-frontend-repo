@@ -88,22 +88,22 @@ export default {
             <VisaCard />
           </div>
         </div>
-        <div>
-          <p>Subscribe to our newsletter and get access to VIP discounts and special offers.</p>
-          <div class="flex items-center h-12 mt-4">
-            <input class="w-full h-full px-2 text-dark-primary outline-none" type="text" placeholder="Your email">
-            <app-button class="bg-blue-primary h-full w-40">Subscribe</app-button>
-          </div>
-        </div>
+<!--        <div>-->
+<!--          <p>Subscribe to our newsletter and get access to VIP discounts and special offers.</p>-->
+<!--          <div class="flex items-center h-12 mt-4">-->
+<!--            <input class="w-full h-full px-2 text-dark-primary outline-none" type="text" placeholder="Your email">-->
+<!--            <app-button class="bg-blue-primary h-full w-40">Subscribe</app-button>-->
+<!--          </div>-->
+<!--        </div>-->
       </div>
-      <div class="footer-links flex justify-between w-full">
-        <div v-for="(linkGroup, index) in footerLinks" :key="index">
-          <h3 class="font-semibold">{{linkGroup.title}}</h3>
-          <ul>
-            <li v-for="(link, linkIndex) in linkGroup.links" class="mt-2" :key="`link_${linkIndex}`">{{link}}</li>
-          </ul>
-        </div>
-      </div>
+<!--      <div class="footer-links flex justify-between w-full">-->
+<!--        <div v-for="(linkGroup, index) in footerLinks" :key="index">-->
+<!--          <h3 class="font-semibold">{{linkGroup.title}}</h3>-->
+<!--          <ul>-->
+<!--            <li v-for="(link, linkIndex) in linkGroup.links" class="mt-2" :key="`link_${linkIndex}`">{{link}}</li>-->
+<!--          </ul>-->
+<!--        </div>-->
+<!--      </div>-->
     </div>
     <hr class=" mt-8 md:mt-16 mb-4 h-[1px] border-0 bg-gray-300"/>
     <div class="md:flex justify-between">
